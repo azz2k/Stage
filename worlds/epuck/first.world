@@ -1,0 +1,97 @@
+#first world
+
+include "epuck.inc"
+include "map.inc"
+include "food.inc"
+
+
+interval_sim 100
+
+speedup -1
+
+resolution 0.005
+
+threads 5
+
+#quit_time 2
+
+window
+(
+   size [736.000 707.000]
+
+   #camera
+   center [-0.067 -0.012]
+   rotate [0 0]
+   scale 156.247
+
+   #perspective camera options
+   pcam_loc [-0.006 -1.225 0.200]
+   pcam_angle [52.000 0]
+
+   #GUI options
+   show_data 0
+   pcam_on 0
+   screenshots 0
+
+)
+
+# load an environment bitmap
+floorplan
+( 
+  name "brl"
+  size [4.000 4.000 0.100]
+  pose [0 0 0 0]
+  bitmap "brl.png"
+)
+
+
+epuck(	color "green" name "r0" pose [0.904 -0.332 0 11.566]	 )
+epuck(	name "r1" pose [-0.592 0.579 0 -140.150]		 )
+epuck(	name "r2" pose [-0.473 -0.629 0 11.808]		 )
+epuck(	name "r3" pose [-1.632 1.035 0 142.920]		 )
+epuck(	name "r4" pose [-0.070 -1.613 0 19.009]		 )
+epuck(	name "r5" pose [1.197 0.847 0 9.111]		 )
+epuck(	name "r6" pose [-1.346 1.847 0 -4.430]		 )
+epuck(	name "r7" pose [0.329 0.815 0 -21.988]		 )
+epuck(	name "r8" pose [-0.089 -0.985 0 25.089]	 )
+epuck(	name "r9" pose [-0.983 -1.226 0 -86.621]	 )
+epuck(	name "r10" pose [-1.341 1.154 0 75.627]	 )
+epuck(	name "r11" pose [-0.254 1.055 0 60.731]	 )
+epuck(	name "r12" pose [0.620 -0.590 0 49.635]	 )
+epuck(	name "r13" pose [-0.059 -0.196 0 -8.640]	 )
+epuck(	name "r14" pose [0.269 -1.460 0 66.489]	 )
+epuck(	name "r15" pose [-0.931 -0.676 0 -99.388]	 )
+epuck(	name "r16" pose [1.870 -0.787 0 118.966]		 )
+epuck(	name "r17" pose [1.036 1.818 0 136.125]		 )
+epuck(	name "r18" pose [1.546 1.721 0 -40.264]		 )
+epuck(	name "r19" pose [0.953 0.227 0 -76.293]		 )
+epuck(	name "r20" pose [0.597 0.114 0 -60.175]		 )
+epuck(	name "r21" pose [-1.647 -1.580 0 120.269]	 )
+epuck(	name "r22" pose [-0.640 -0.822 0 70.350]	 )
+epuck(	name "r23" pose [-1.177 1.455 0 91.191]	 )
+epuck(	name "r24" pose [1.501 0.817 0 -78.357]		 )
+epuck(	name "r25" pose [-0.449 0.974 0 -145.689]	 )
+epuck(	name "r26" pose [-1.180 0.787 0 86.373]		 )
+epuck(	name "r27" pose [1.834 0.819 0 146.880]		 )
+epuck(	name "r28" pose [-1.695 -1.242 0 -83.880]	 )
+epuck(	name "r29" pose [-0.787 1.185 0 -88.089]	 )
+epuck(	name "r30" pose [-0.118 -1.170 0 -156.628]	 )
+epuck(	name "r31" pose [-1.139 -0.034 0 11.411]	 )
+epuck(	name "r32" pose [-0.301 -1.838 0 140.549]	 )
+epuck(	name "r33" pose [-0.820 1.716 0 -118.219]	 )
+epuck(	name "r34" pose [-1.324 1.653 0 -19.108]	 )
+epuck(	name "r35" pose [-1.809 0.813 0 54.886]	 )
+epuck(	name "r36" pose [-1.761 -1.760 0 -90.665]	 )
+epuck(	name "r37" pose [0.009 1.085 0 61.421]	 )
+epuck(	name "r38" pose [0.580 -1.203 0 68.567]		 )
+epuck(	name "r39" pose [0.705 0.691 0 -174.378]	 )
+
+food_item (name "f1" pose [0 0 0 0])
+food_item (name "f2" pose [1 0 0 0])
+food_item (name "f3" pose [0 1 0 0])
+food_item (name "f4" pose [-1 0 0 0])
+food_item (name "f5" pose [0 -1 0 0])
+food_item (name "f6" pose [1 1 0 0])
+food_item (name "f7" pose [1 -1 0 0])
+food_item (name "f8" pose [-1 1 0 0])
+food_item (name "f9" pose [-1 -1 0 0])

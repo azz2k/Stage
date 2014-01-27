@@ -1,51 +1,38 @@
-# cave.world - 100 robot test and benchmark world
-# Authors: Richard Vaughan
-# $id$
+#first world
 
-include "../pioneer.inc"
+include "epuck.inc"
 include "../map.inc"
-include "../sick.inc"
 
-resolution 0.02    # resolution of the underlying raytrace mode
+speedup 2
 
-speedup -1 # as fast as possible
+resolution 0.005
 
-paused 1
+threads 5
 
-threads 7
-
-# configure the GUI window
 window
 (
   size [ 1076.000 585.000 ]
   center [-0.464 1.570]
   rotate [ 58.500 17.500 ]
-  scale 53.439 
-  interval 50
+  scale 153.439 
 )
 
+# load an environment bitmap
 floorplan
 ( 
   name "cave"
-  size [16.000 16.000 0.600]
+  size [4.000 4.000 0.100]
   pose [0 0 0 0]
   bitmap "../bitmaps/cave_filled.png"
 )
 
-define rob pioneer2dx
-(
- # origin [ 0 0 0 0 ]
- sicklaser( ) 
- ctrl "test_pioneer" 
-)
-
-rob( pose [-5.285 4.915 0 150.459] color "red" )
-rob( pose [-4.458 5.785 0 -85.494] color "red" )
-rob( pose [-5.518 4.157 0 -10.236] color "red" )
-rob( pose [-6.007 5.008 0 144.441] color "red" )
-rob( pose [-5.599 3.365 0 -172.038] color "red" )
-rob( pose [-6.852 3.655 0 4.679] color "red" )
-rob( pose [-7.483 4.049 0 -12.199] color "red" )
-rob( pose [-4.341 4.938 0 5.407] color "red" )
-rob( pose [-6.277 4.252 0 -97.494] color "red" )
-rob( pose [-5.202 5.566 0 -89.743] color "red" )
+# initialize epuck
+epuck(	color "red" name "r0" pose [-0.400 0.000 0 10.000] )
+epuck(	color "red" name "r0" pose [-0.500 0.000 0 0.000] )
+epuck(	color "red" name "r0" pose [-0.600 0.000 0 -10.000] )
+epuck(	color "green" name "r0" pose [-0.400 0.300 0 100.000] )
+epuck(	color "green" name "r0" pose [-0.500 0.300 0 90.000] )
+epuck(	color "green" name "r0" pose [-0.600 0.300 0 80.000] )
+epuck(	color "blue" name "r0" pose [-0.400 -0.300 0 190.000] )
+epuck(	color "blue" name "r0" pose [-0.500 -0.300 0 180.000] )
+epuck(	color "blue" name "r0" pose [-0.600 -0.300 0 170.000] )

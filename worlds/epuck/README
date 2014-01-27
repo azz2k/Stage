@@ -1,0 +1,25 @@
+1. to compile the code, cmake is required
+   cmake .
+   make
+
+2. souce code:
+
+   epuck.hh		head file for class Robot
+   epuck.cc		Implementation of Robot class,  behaviours defined here
+   SConstruct		used by scons to compile the code
+   proximity_data.csv	stores measured ir sensor data 
+
+3. models and world file:
+
+   epuck.inc		defined epuck model, the last line defines which controller will be used
+   food.inc		defined food model
+   map.inc		defined map model
+   brl.png		walls and static object
+   first.world		world with 40 epuck robots and 9 food items
+   single.world		world with 1 epuck robots and 9 food items
+
+4. to run example
+   stage first.world
+
+5. you may need to export STAGEPATH 
+   export STAGEPATH=./

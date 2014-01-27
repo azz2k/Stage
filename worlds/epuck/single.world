@@ -1,0 +1,73 @@
+#first world
+
+include "epuck.inc"
+include "map.inc"
+include "food.inc"
+
+speedup 2
+
+resolution 0.005
+
+threads 5
+
+window
+(
+   size [736.000 707.000]
+
+   #camera
+   center [-0.067 -0.012]
+   rotate [0 0]
+   scale 156.247
+
+   #perspective camera options
+   pcam_loc [-0.006 -1.225 0.200]
+   pcam_angle [52.000 0]
+
+   #GUI options
+   show_data 1
+   pcam_on 0
+   screenshots 0
+
+)
+
+# load an environment bitmap
+floorplan
+( 
+  name "brl"
+  size [4.000 4.000 0.100]
+  pose [0 0 0 0]
+  bitmap "brl.png"
+)
+
+
+#epuck(name "r1" pose [ 0 0 0 0 ] ctrl "libepuck")
+
+epuck(	color "green" name "r0" pose [0.904 -0.332 0 11.566]	 )
+
+food_item (name "f1" pose [0 0 0 0])
+food_item (name "f2" pose [1 0 0 0])
+food_item (name "f3" pose [0 1 0 0])
+food_item (name "f4" pose [-1 0 0 0])
+food_item (name "f5" pose [0 -1 0 0])
+food_item (name "f6" pose [1 1 0 0])
+food_item (name "f7" pose [1 -1 0 0])
+food_item (name "f8" pose [-1 1 0 0])
+food_item (name "f9" pose [-1 -1 0 0])
+
+#model(size [0.1 0.1 0.1] pose [1 1 0 0])
+#epuck_ext(	name "r1" pose [2 -0.605 0 33.869]	ircomm (pose [0.035 0 0 0])	ctrl "libepuck" )
+
+#model(
+#	name "light1" 
+#	color "yellow"
+#	size [0.010 0.010 0.041]
+#	pose [ 1.010 -0.573 0 180.000]
+#	blinkenlight(size [0.001 0.002 0.002] pose [ 0 0 0 0] color "red" period 10 dutycycle 0.5 enabled 1)
+#	ircomm(size [0.001 0.002 0.002] pose [ 0 0 0 0]  color "green")
+#)
+
+
+
+
+
+

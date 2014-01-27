@@ -13,3 +13,4 @@ CMakeFiles
 CMakeCache.txt
 libstage/stage
 stage.pc
+*.bak

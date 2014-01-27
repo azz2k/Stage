@@ -1,4 +1,5 @@
 #include "epuck.hh"
+#include <iostream>
 
 int avoid_weightleft[8] = { -8, -3, -1, 2, 2, 1, 3, 6};
 int avoid_weightright[8] = {6, 3, 1, 2, 2, -1, -3, -8};
@@ -255,6 +256,7 @@ void Robot::Avoidance()
 
     if (this->pos->Stalled())
     {
+        std::cout << "stalled" << std::endl;
         leftwheel = -500;
         rightwheel = -500;
 

@@ -1,7 +1,7 @@
-SET( epuck_baseSrcs epuck_base.cc )
-ADD_LIBRARY( epuck_base MODULE ${epuck_baseSrcs} )
-TARGET_LINK_LIBRARIES( epuck_base stage )
-set_source_files_properties( ${epuck_baseSrcs} PROPERTIES COMPILE_FLAGS "${FLTK_CFLAGS}" )
-SET_TARGET_PROPERTIES( epuck_base PROPERTIES PREFIX "" )
+SET( epuckSrcs epuck.cc )
+ADD_LIBRARY( epuck MODULE ${epuckSrcs} )
+TARGET_LINK_LIBRARIES( epuck stage )
+set_source_files_properties( ${epuckSrcs} PROPERTIES COMPILE_FLAGS "${FLTK_CFLAGS}" )
+SET_TARGET_PROPERTIES( epuck PROPERTIES PREFIX "" )
 
-INSTALL( TARGETS epuck_base DESTINATION ${PROJECT_PLUGIN_DIR})
+INSTALL( TARGETS epuck DESTINATION ${PROJECT_PLUGIN_DIR})

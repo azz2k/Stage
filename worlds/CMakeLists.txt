@@ -1,4 +1,5 @@
 ADD_SUBDIRECTORY(benchmark)
+ADD_SUBDIRECTORY(epuck)
 
 FILE( GLOB cfgs "*.cfg" )
 FILE( GLOB worlds "*.world" )

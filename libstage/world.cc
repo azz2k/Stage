@@ -224,24 +224,28 @@ void World::Run()
     }
     else
     {
+      struct timeval startTime, currTime;
+      gettimeofday(&startTime, NULL);
       while(!UpdateAll())
       {
-        FOR_EACH(world_it, World::world_set)
-        {
-          std::cout << World::world_set.size() << " worlds, t = " << (*world_it)->sim_time << ":" << std::endl;
-          std::cout << (*world_it)->models.size() << " models active" << std::endl;
-          for(std::set<Model*>::iterator model_it = (*world_it)->models.begin(); model_it != (*world_it)->models.end(); model_it++)
-          {
-            std::cout << (*model_it)->GetId() << " (" 
-              << (*model_it)->TokenStr() << ") : "
-              << (*model_it)->GetModelType() << " @ "
-              << (*model_it)->GetPose().x << ","
-              << (*model_it)->GetPose().y << ","
-              << (*model_it)->GetPose().z << ","
-              << (*model_it)->GetPose().a << " "
-              << std::endl;
-          }
-        }
+        gettimeofday(&currTime, NULL);
+        std::cout << "speedup: " << (*World::world_set.begin())->sim_time / ((currTime.tv_sec - startTime.tv_sec)*1e6 + (currTime.tv_usec - startTime.tv_usec)) << std::endl;
+//        FOR_EACH(world_it, World::world_set)
+//        {
+//          std::cout << World::world_set.size() << " worlds, t = " << (*world_it)->sim_time << ":" << std::endl;
+//          std::cout << (*world_it)->models.size() << " models active" << std::endl;
+//          for(std::set<Model*>::iterator model_it = (*world_it)->models.begin(); model_it != (*world_it)->models.end(); model_it++)
+//          {
+//            std::cout << (*model_it)->GetId() << " (" 
+//              << (*model_it)->TokenStr() << ") : "
+//              << (*model_it)->GetModelType() << " @ "
+//              << (*model_it)->GetPose().x << ","
+//              << (*model_it)->GetPose().y << ","
+//              << (*model_it)->GetPose().z << ","
+//              << (*model_it)->GetPose().a << " "
+//              << std::endl;
+//          }
+//        }
       }
     }
 }

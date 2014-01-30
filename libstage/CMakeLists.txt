@@ -68,7 +68,7 @@ target_link_libraries( stage
                        ${FLTK_LIBRARIES}
 )
 
-set( stagebinarySrcs main.cc )
+set( stagebinarySrcs main.cc ../../protobuf/lib/sim.pb.cc)
 set_source_files_properties( ${stagebinarySrcs} PROPERTIES COMPILE_FLAGS "${FLTK_CFLAGS}" )
 
 # TODO: build an app bundle on OS X
@@ -90,10 +90,10 @@ set_target_properties( stagebinary PROPERTIES OUTPUT_NAME stage )
 # Newer Linux distributions won't allow stagebinary to inherit libstage's links to fltk, so we need
 # to explicitly link on Linux
 
-target_link_libraries( stagebinary stage )
+target_link_libraries( stagebinary stage protobuf)
 
 IF(PROJECT_OS_LINUX)
-  target_link_libraries( stagebinary stage pthread )
+  target_link_libraries( stagebinary stage pthread protobuf )
 ENDIF(PROJECT_OS_LINUX)
 
 INSTALL(TARGETS stagebinary stage

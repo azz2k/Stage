@@ -291,8 +291,13 @@ void World::Run()
       {
         char buf[128];
         int rxlen = recv(clientsd, buf, sizeof(buf), 0);
-          if(rxlen < 0)
-            std::cout << strerror(errno) << std::endl;
+        if(rxlen < 0)
+        {
+          std::cout << strerror(errno) << std::endl;
+          continue;
+        }
+        if(rxlen == 0)
+          continue;
         msgStream.append(std::string(buf, rxlen));
 
         size_t delimPos = msgStream.find("\r\n");
@@ -349,6 +354,7 @@ void World::Run()
               UpdateAll();
             }
             std::cout << "Simulation finished" << std::endl;
+            sendto(clientsd, "finished", 8*sizeof(char), 0, (struct sockaddr*) &client, sizeof(client));
           }
         }
       }

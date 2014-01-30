@@ -256,7 +256,7 @@ void Robot::Avoidance()
 
     if (this->pos->Stalled())
     {
-        std::cout << "stalled" << std::endl;
+//        std::cout << "stalled" << std::endl;
         leftwheel = -500;
         rightwheel = -500;
 

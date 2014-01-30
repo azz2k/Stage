@@ -3,11 +3,11 @@
 include "epuck.inc"
 include "../map.inc"
 
-speedup 2
+speedup -1
 
 resolution 0.005
 
-threads 5
+threads 1
 
 window
 (
@@ -28,3 +28,6 @@ floorplan
 
 # initialize epuck
 epuck(	color "red" name "r0" pose [-0.500 0.000 0 0.000] )
+epuck(	color "red" name "r1" pose [-0.500 0.200 0 90.000] )
+epuck(	color "red" name "r2" pose [-0.500 0.300 0 180.000] )
+epuck(	color "red" name "r3" pose [-0.500 0.400 0 270.000] )

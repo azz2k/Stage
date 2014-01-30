@@ -226,9 +226,9 @@ void World::Run()
     {
       while(!UpdateAll())
       {
-        FOR_EACH( world_it, World::world_set )
+        FOR_EACH(world_it, World::world_set)
         {
-          std::cout << "t = " << (*world_it)->sim_time << ":" << std::endl;
+          std::cout << World::world_set.size() << " worlds, t = " << (*world_it)->sim_time << ":" << std::endl;
           std::cout << (*world_it)->models.size() << " models active" << std::endl;
           for(std::set<Model*>::iterator model_it = (*world_it)->models.begin(); model_it != (*world_it)->models.end(); model_it++)
           {

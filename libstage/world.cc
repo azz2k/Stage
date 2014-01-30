@@ -224,7 +224,25 @@ void World::Run()
     }
     else
     {
-        while(!UpdateAll());
+      while(!UpdateAll())
+      {
+        FOR_EACH( world_it, World::world_set )
+        {
+          std::cout << "t = " << (*world_it)->sim_time << ":" << std::endl;
+          std::cout << (*world_it)->models.size() << " models active" << std::endl;
+          for(std::set<Model*>::iterator model_it = (*world_it)->models.begin(); model_it != (*world_it)->models.end(); model_it++)
+          {
+            std::cout << (*model_it)->GetId() << " (" 
+              << (*model_it)->TokenStr() << ") : "
+              << (*model_it)->GetModelType() << " @ "
+              << (*model_it)->GetPose().x << ","
+              << (*model_it)->GetPose().y << ","
+              << (*model_it)->GetPose().z << ","
+              << (*model_it)->GetPose().a << " "
+              << std::endl;
+          }
+        }
+      }
     }
 }
 
@@ -233,10 +251,10 @@ bool World::UpdateAll()
   bool quit( true );
   
   FOR_EACH( world_it, World::world_set )
-    {
-      if( (*world_it)->Update() == false )
-	quit = false;
-    }
+  {
+    if( (*world_it)->Update() == false )
+      quit = false;
+  }
   
   return quit;
 }

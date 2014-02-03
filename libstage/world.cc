@@ -244,6 +244,7 @@ void World::Run()
       if(mythis->simJobs.empty())
       {
         pthread_mutex_unlock(&(mythis->simJobsMutex));
+        usleep(10);
       } else
       {
         struct World::SimJob job;
@@ -383,6 +384,9 @@ void *World::receiveSimJobs(void)
         this->simJobs.push(job);
         pthread_mutex_unlock(&(this->simJobsMutex));
       }
+    } else
+    {
+      usleep(10);
     }
   }
   close(sd);

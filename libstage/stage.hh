@@ -68,6 +68,10 @@
 #include <GL/glu.h>
 #endif 
 
+// my includes
+#include <netinet/in.h> // struct sockaddr_in
+#include "../../protobuf/lib/sim.pb.h"
+
 /** @brief The Stage library uses its own namespace */
 namespace Stg 
 {
@@ -902,7 +906,20 @@ namespace Stg
     pthread_cond_t threads_done_cond; ///< signalled by last worker thread to unblock main thread
     int total_subs; ///< the total number of subscriptions to all models
     unsigned int worker_threads; ///< the number of worker threads to use
-    
+
+    //--- simJobs stuff ---//
+    void *receiveSimJobs(void);
+    static void *receiveSimJobsHelper(void *context){return ((World *)context)->receiveSimJobs();}
+    struct SimJob
+    {
+      simMessages::SimRequest msg;
+      int clientsd;
+      struct sockaddr_in client;
+    };
+    pthread_mutex_t simJobsMutex;
+    pthread_t simJobsThread;
+    std::queue<struct SimJob> simJobs;
+  
   protected:	 
 
     std::list<std::pair<world_callback_t,void*> > cb_list; ///< List of callback functions and arguments

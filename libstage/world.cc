@@ -106,6 +106,7 @@ using namespace Stg;
 #include <errno.h>
 #include <string>
 #include <iostream>
+#include <queue>
 #include "../../protobuf/lib/sim.pb.h"
 
 // // function objects for comparing model positions
@@ -217,149 +218,174 @@ void World::DestroySuperRegion( SuperRegion* sr )
 
 void World::Run()
 {
-    // first check wheter there is a single gui world
-    bool found_gui = false;
-    FOR_EACH( world_it, world_set )
+  // first check wheter there is a single gui world
+  bool found_gui = false;
+  FOR_EACH( world_it, world_set )
+  {
+      found_gui |= (*world_it)->IsGUI();
+  }
+  if(found_gui && (world_set.size() != 1))
+  {
+      PRINT_WARN( "When using the GUI only a single world can be simulated." );
+      exit(-1);      
+  }
+  
+  if(found_gui)
+  {
+      Fl::run();
+  }
+  else
+  {
+    World *mythis = *World::world_set.begin();
+    pthread_create(&(mythis->simJobsThread), NULL, &World::receiveSimJobsHelper, mythis);
+    while(true)
     {
-        found_gui |= (*world_it)->IsGUI();
-    }
-    if(found_gui && (world_set.size() != 1))
-    {
-        PRINT_WARN( "When using the GUI only a single world can be simulated." );
-        exit(-1);      
-    }
-    
-    if(found_gui)
-    {
-        Fl::run();
-    }
-    else
-    {
-      //-- SET UP PORT AND GET INTO LISTEN MODE --//
-      int port, sd;
-      struct sockaddr_in local_addr;
-      
-      // parse command line
-      port = 8765;
-      
-      // create socket
-      sd = socket(AF_INET, SOCK_STREAM, 0);
-      if(sd < 0) 
+      pthread_mutex_lock(&(mythis->simJobsMutex));
+      if(mythis->simJobs.empty())
       {
-        std::cout << "Error opening socket" << std::endl;
-        exit(-1);      
-      }
-      //set socket options
-      int flag = 1;
-      if (setsockopt(sd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(int)) == -1)
+        pthread_mutex_unlock(&(mythis->simJobsMutex));
+      } else
       {
-        std::cout << "setsockopt(SO_REUSEADDR) failed" << std::endl;
-        exit(-1);      
-      }
-      // set target and connect socket
-      bzero((char *) &local_addr, sizeof(local_addr));
-      local_addr.sin_family = AF_INET;
-      local_addr.sin_port = htons(port);
-      local_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-      if(bind(sd, (struct sockaddr *) &local_addr, sizeof(local_addr)) < 0) 
-      {
-        std::cout << "Error binding" << std::endl;
-        exit(-1);      
-      }
-
-      // bring socket into listen mode
-      listen(sd, 10);
-
-      bool waitForAccept = true;
-      struct sockaddr_in client;
-      int clientsd;
-      while(waitForAccept)
-      {
-        socklen_t clientLen = sizeof(client);
-        clientsd = accept(sd, (struct sockaddr *) &client, &clientLen);
-        if(clientsd < 0)
+        struct World::SimJob job;
+        job = mythis->simJobs.front();
+        mythis->simJobs.pop();
+        std::cout << "Setting up simulation" << std::endl;
+        mythis->GetModel(job.msg.self().name())->pose.x = job.msg.self().pose().x();
+        mythis->GetModel(job.msg.self().name())->pose.y = job.msg.self().pose().y();
+        mythis->GetModel(job.msg.self().name())->pose.z = job.msg.self().pose().z();
+        mythis->GetModel(job.msg.self().name())->pose.a = job.msg.self().pose().a();
+        if(job.msg.other_size() > 0)
         {
-          std::cout << "accpet() failed" << std::endl;
-        } else
-        {
-          std::cout << "connection from " << inet_ntoa(client.sin_addr) << ":" << ntohs(client.sin_port) << " accepted" << std::endl;
-          waitForAccept = false;
-        }
-      }
-      std::string msgStream;
-      while(true)
-      {
-        char buf[128];
-        int rxlen = recv(clientsd, buf, sizeof(buf), 0);
-        if(rxlen < 0)
-        {
-          std::cout << strerror(errno) << std::endl;
-          continue;
-        }
-        if(rxlen == 0)
-          continue;
-        msgStream.append(std::string(buf, rxlen));
-
-        size_t delimPos = msgStream.find("\r\n");
-        if(delimPos != std::string::npos)
-        {
-          std::string msgRaw = msgStream.substr(0, delimPos);
-          msgStream.erase(0, delimPos+2);
-          simMessages::SimRequest msg;
-          if(msg.ParseFromString(msgRaw))
+          for(int i=0; i < job.msg.other_size(); i++)
           {
-            std::cout << "received a message from" << inet_ntoa(client.sin_addr) << ":" << ntohs(client.sin_port) << " :" << std::endl;
-//            std::cout << "self: "
-//              << msg.self().name() << " "
-//              << msg.self().pose().x() << " "
-//              << msg.self().pose().y() << " "
-//              << msg.self().pose().z() << " "
-//              << msg.self().pose().a() << " "
-//              << msg.self().pose().v() << " " 
-//              << msg.self().program() << std::endl;
-//            if(msg.other_size() > 0)
-//            {
-//              for(int i=0; i < msg.other_size(); i++)
-//              {
-//                std::cout << "other: "
-//                  << msg.other(i).name() << " "
-//                  << msg.other(i).pose().x() << " "
-//                  << msg.other(i).pose().y() << " "
-//                  << msg.other(i).pose().z() << " "
-//                  << msg.other(i).pose().a() << " "
-//                  << msg.other(i).pose().v() << " "
-//                  << msg.other(i).program() << std::endl;
-//              }
-//            }
-//            std::cout << "dt: " << msg.dt() << std::endl;
-            std::cout << "Setting up simulation" << std::endl;
-            (*World::world_set.begin())->GetModel(msg.self().name())->pose.x = msg.self().pose().x();
-            (*World::world_set.begin())->GetModel(msg.self().name())->pose.y = msg.self().pose().y();
-            (*World::world_set.begin())->GetModel(msg.self().name())->pose.z = msg.self().pose().z();
-            (*World::world_set.begin())->GetModel(msg.self().name())->pose.a = msg.self().pose().a();
-            if(msg.other_size() > 0)
-            {
-              for(int i=0; i < msg.other_size(); i++)
-              {
-                (*World::world_set.begin())->GetModel(msg.other(i).name())->pose.x = msg.other(i).pose().x();
-                (*World::world_set.begin())->GetModel(msg.other(i).name())->pose.y = msg.other(i).pose().y();
-                (*World::world_set.begin())->GetModel(msg.other(i).name())->pose.z = msg.other(i).pose().z();
-                (*World::world_set.begin())->GetModel(msg.other(i).name())->pose.a = msg.other(i).pose().a();
-              }
-            }
-            std::cout << "Starting simulation" << std::endl;
-            usec_t startTime = (*World::world_set.begin())->sim_time;
-            while((*World::world_set.begin())->sim_time < startTime + msg.dt()*1e6)
-            {
-              UpdateAll();
-            }
-            std::cout << "Simulation finished" << std::endl;
-            sendto(clientsd, "finished", 8*sizeof(char), 0, (struct sockaddr*) &client, sizeof(client));
+            mythis->GetModel(job.msg.other(i).name())->pose.x = job.msg.other(i).pose().x();
+            mythis->GetModel(job.msg.other(i).name())->pose.y = job.msg.other(i).pose().y();
+            mythis->GetModel(job.msg.other(i).name())->pose.z = job.msg.other(i).pose().z();
+            mythis->GetModel(job.msg.other(i).name())->pose.a = job.msg.other(i).pose().a();
           }
         }
+        std::cout << "Starting simulation" << std::endl;
+        usec_t startTime = mythis->sim_time;
+        while(mythis->sim_time < startTime + job.msg.dt()*1e6)
+        {
+          UpdateAll();
+        }
+        std::cout << "Simulation finished" << std::endl;
+        simMessages::SimResult result;
+        result.mutable_self()->mutable_pose()->set_x(mythis->GetModel(result.self().name())->pose.x);
+        result.mutable_self()->mutable_pose()->set_y(mythis->GetModel(result.self().name())->pose.y);
+        result.mutable_self()->mutable_pose()->set_z(mythis->GetModel(result.self().name())->pose.z);
+        result.mutable_self()->mutable_pose()->set_a(mythis->GetModel(result.self().name())->pose.a);
+        result.mutable_self()->set_program(job.msg.self().program());
+        if(job.msg.other_size() > 0)
+        {
+          for(int i=0; i < job.msg.other_size(); i++)
+          {
+            simMessages::Robot * other = result.add_other();
+            other->set_name(job.msg.other(i).name());
+            other->mutable_pose()->set_x(mythis->GetModel(job.msg.other(i).name())->pose.x);
+            other->mutable_pose()->set_y(mythis->GetModel(job.msg.other(i).name())->pose.y);
+            other->mutable_pose()->set_z(mythis->GetModel(job.msg.other(i).name())->pose.z);
+            other->mutable_pose()->set_a(mythis->GetModel(job.msg.other(i).name())->pose.a);
+            other->set_program(job.msg.other(i).program());
+          }
+        }
+        std::string serializedResult;
+        result.SerializeToString(&serializedResult);
+        serializedResult.append("\r\n");
+        sendto(job.clientsd, serializedResult.c_str(), serializedResult.size()*sizeof(char), 0, (struct sockaddr*) &job.client, sizeof(job.client));
       }
-      close(sd);
     }
+  }
+}
+
+void *World::receiveSimJobs(void)
+{
+  //-- SET UP PORT AND GET INTO LISTEN MODE --//
+  int port, sd;
+  struct sockaddr_in local_addr;
+  
+  // parse command line
+  port = 8765;
+  
+  // create socket
+  sd = socket(AF_INET, SOCK_STREAM, 0);
+  if(sd < 0) 
+  {
+    std::cout << "Error opening socket" << std::endl;
+    exit(-1);      
+  }
+  //set socket options
+  int flag = 1;
+  if (setsockopt(sd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(int)) == -1)
+  {
+    std::cout << "setsockopt(SO_REUSEADDR) failed" << std::endl;
+    exit(-1);      
+  }
+  // set target and connect socket
+  bzero((char *) &local_addr, sizeof(local_addr));
+  local_addr.sin_family = AF_INET;
+  local_addr.sin_port = htons(port);
+  local_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+  if(bind(sd, (struct sockaddr *) &local_addr, sizeof(local_addr)) < 0) 
+  {
+    std::cout << "Error binding" << std::endl;
+    exit(-1);      
+  }
+
+  // bring socket into listen mode
+  listen(sd, 10);
+
+  bool waitForAccept = true;
+  struct sockaddr_in client;
+  int clientsd;
+  while(waitForAccept)
+  {
+    socklen_t clientLen = sizeof(client);
+    clientsd = accept(sd, (struct sockaddr *) &client, &clientLen);
+    if(clientsd < 0)
+    {
+      std::cout << "accpet() failed" << std::endl;
+    } else
+    {
+      std::cout << "connection from " << inet_ntoa(client.sin_addr) << ":" << ntohs(client.sin_port) << " accepted" << std::endl;
+      waitForAccept = false;
+    }
+  }
+  std::string msgStream;
+  while(true)
+  {
+    char buf[128];
+    int rxlen = recv(clientsd, buf, sizeof(buf), 0);
+    if(rxlen < 0)
+    {
+      std::cout << strerror(errno) << std::endl;
+      continue;
+    }
+    if(rxlen == 0)
+      continue;
+    msgStream.append(std::string(buf, rxlen));
+
+    size_t delimPos = msgStream.find("\r\n");
+    if(delimPos != std::string::npos)
+    {
+      std::string msgRaw = msgStream.substr(0, delimPos);
+      msgStream.erase(0, delimPos+2);
+      simMessages::SimRequest msg;
+      if(msg.ParseFromString(msgRaw))
+      {
+        std::cout << "received a message from" << inet_ntoa(client.sin_addr) << ":" << ntohs(client.sin_port) << std::endl;
+        struct World::SimJob job;
+        job.msg = msg;
+        job.clientsd = clientsd;
+        job.client = client;
+        pthread_mutex_lock(&(this->simJobsMutex));
+        this->simJobs.push(job);
+        pthread_mutex_unlock(&(this->simJobsMutex));
+      }
+    }
+  }
+  close(sd);
 }
 
 bool World::UpdateAll()

@@ -361,6 +361,7 @@ void *World::receiveSimJobs(void)
     if(rxlen < 0)
     {
       std::cout << strerror(errno) << std::endl;
+      usleep(10);
       continue;
     }
     if(rxlen == 0)
@@ -384,9 +385,6 @@ void *World::receiveSimJobs(void)
         this->simJobs.push(job);
         pthread_mutex_unlock(&(this->simJobsMutex));
       }
-    } else
-    {
-      usleep(10);
     }
   }
   close(sd);

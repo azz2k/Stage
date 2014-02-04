@@ -244,7 +244,7 @@ void World::Run()
       if(mythis->simJobs.empty())
       {
         pthread_mutex_unlock(&(mythis->simJobsMutex));
-        usleep(10);
+        usleep(1000);
       } else
       {
         struct World::SimJob job;
@@ -361,7 +361,7 @@ void *World::receiveSimJobs(void)
     if(rxlen < 0)
     {
       std::cout << strerror(errno) << std::endl;
-      usleep(10);
+      usleep(1000);
       continue;
     }
     if(rxlen == 0)

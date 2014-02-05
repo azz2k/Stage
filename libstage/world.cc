@@ -250,6 +250,7 @@ void World::Run()
         struct World::SimJob job;
         job = mythis->simJobs.front();
         mythis->simJobs.pop();
+        pthread_mutex_unlock(&(mythis->simJobsMutex));
         std::cout << "Setting up simulation" << std::endl;
         mythis->GetModel(job.msg.self().name())->pose.x = job.msg.self().pose().x();
         mythis->GetModel(job.msg.self().name())->pose.y = job.msg.self().pose().y();
@@ -340,8 +341,10 @@ void *World::receiveSimJobs(void)
   bool waitForAccept = true;
   struct sockaddr_in client;
   int clientsd;
+  std::cout << "simulation server waiting for connection on port " << port << std::endl;
   while(waitForAccept)
   {
+
     socklen_t clientLen = sizeof(client);
     clientsd = accept(sd, (struct sockaddr *) &client, &clientLen);
     if(clientsd < 0)

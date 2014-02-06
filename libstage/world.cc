@@ -252,9 +252,9 @@ void World::Run()
         mythis->simJobs.pop();
         pthread_mutex_unlock(&(mythis->simJobsMutex));
         std::cout << "Setting up simulation" << std::endl;
+        std::cout << job.msg.self().name() << std::endl;
         mythis->GetModel(job.msg.self().name())->pose.x = job.msg.self().pose().x();
         mythis->GetModel(job.msg.self().name())->pose.y = job.msg.self().pose().y();
-        mythis->GetModel(job.msg.self().name())->pose.z = job.msg.self().pose().z();
         mythis->GetModel(job.msg.self().name())->pose.a = job.msg.self().pose().a();
         if(job.msg.other_size() > 0)
         {
@@ -262,7 +262,6 @@ void World::Run()
           {
             mythis->GetModel(job.msg.other(i).name())->pose.x = job.msg.other(i).pose().x();
             mythis->GetModel(job.msg.other(i).name())->pose.y = job.msg.other(i).pose().y();
-            mythis->GetModel(job.msg.other(i).name())->pose.z = job.msg.other(i).pose().z();
             mythis->GetModel(job.msg.other(i).name())->pose.a = job.msg.other(i).pose().a();
           }
         }
@@ -274,10 +273,9 @@ void World::Run()
         }
         std::cout << "Simulation finished" << std::endl;
         simMessages::SimResult result;
-        result.mutable_self()->mutable_pose()->set_x(mythis->GetModel(result.self().name())->pose.x);
-        result.mutable_self()->mutable_pose()->set_y(mythis->GetModel(result.self().name())->pose.y);
-        result.mutable_self()->mutable_pose()->set_z(mythis->GetModel(result.self().name())->pose.z);
-        result.mutable_self()->mutable_pose()->set_a(mythis->GetModel(result.self().name())->pose.a);
+        result.mutable_self()->mutable_pose()->set_x(mythis->GetModel(job.msg.self().name())->pose.x);
+        result.mutable_self()->mutable_pose()->set_y(mythis->GetModel(job.msg.self().name())->pose.y);
+        result.mutable_self()->mutable_pose()->set_a(mythis->GetModel(job.msg.self().name())->pose.a);
         result.mutable_self()->set_program(job.msg.self().program());
         if(job.msg.other_size() > 0)
         {
@@ -287,7 +285,6 @@ void World::Run()
             other->set_name(job.msg.other(i).name());
             other->mutable_pose()->set_x(mythis->GetModel(job.msg.other(i).name())->pose.x);
             other->mutable_pose()->set_y(mythis->GetModel(job.msg.other(i).name())->pose.y);
-            other->mutable_pose()->set_z(mythis->GetModel(job.msg.other(i).name())->pose.z);
             other->mutable_pose()->set_a(mythis->GetModel(job.msg.other(i).name())->pose.a);
             other->set_program(job.msg.other(i).program());
           }

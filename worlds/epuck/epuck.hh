@@ -10,10 +10,6 @@ using namespace Stg;
 #define WHEEL_DIA 					0.04
 #define WHEEL_SEP 					0.052
 
-
-enum fsm_state_t{FLOCKING=0,STATE_COUNT};
-const char *state_name[STATE_COUNT]={"Flocking"};
-
 class Robot
 {
 private:
@@ -29,10 +25,7 @@ public:
 	int proximity[NUM_IRS];
 	char *name;
 	void Avoidance();
-	void Flocking();
 	void PrintProximitySensor();
-	void PrintState();
-	fsm_state_t current_state, last_state, previous_state;
 
 	unsigned char bumped;
 };

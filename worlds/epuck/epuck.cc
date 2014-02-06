@@ -4,7 +4,6 @@
 int avoid_weightleft[8] = { -8, -3, -1, 2, 2, 1, 3, 6};
 int avoid_weightright[8] = {6, 3, 1, 2, 2, -1, -3, -8};
 
-
 #define DEBUG
 
 #define IR_NUM 8
@@ -134,16 +133,12 @@ double proximity_data[][2]={
 	{2.00,	0.24},
 	{1.40,	0.24}};
 
-
-
-
 // Stage calls this when the model starts up
 extern "C" int Init( Model* mod )
 {
     Robot *robot = new Robot((ModelPosition*)mod);
     return 0; //ok
 }
-
 
 Robot::Robot(ModelPosition* pos):
         bumped(0)
@@ -155,10 +150,6 @@ Robot::Robot(ModelPosition* pos):
 
     this->name = strdup(this->pos->Token());
 
-
-    this->current_state = FLOCKING;
-    this->last_state = FLOCKING;
-
     for (i = 0;i < NUM_IRS;i++)
         this->proximity[i] = 0;
 
@@ -168,8 +159,6 @@ Robot::Robot(ModelPosition* pos):
         this->ir->AddCallback(Model::CB_UPDATE,(model_callback_t)this->IRUpdate, this);
         this->ir->Subscribe();
     }
-    
-
 }
 
 Robot::~Robot()
@@ -199,7 +188,6 @@ int Robot::IRUpdate( Model* mod, Robot *robot )
                 ir_min = ir[i].ranges[j];
             }
         }
-
         robot->proximity[i] = proximity_data[clip(ir_min)][0];
         if (robot->proximity[i] > 10)
             robot->bumped |= 1 << i;
@@ -209,17 +197,8 @@ int Robot::IRUpdate( Model* mod, Robot *robot )
 
 int Robot::PositionUpdate( Model* mod, Robot *robot)
 {
-
-    switch (robot->current_state)
-    {
-        case FLOCKING:
-            robot->Flocking();
-            break;
-        default:
-            break;
-    }
-
-    return 0; // run again
+  robot->Avoidance();
+  return 0;
 }
 
 void Robot::SetSpeed(int lspeed, int rspeed)
@@ -253,25 +232,7 @@ void Robot::Avoidance()
         leftwheel += avoid_weightleft[i] * (proximity[i]);
         rightwheel += avoid_weightright[i] * (proximity[i]);
     }
-
-    if (this->pos->Stalled())
-    {
-//        std::cout << "stalled" << std::endl;
-        leftwheel = -500;
-        rightwheel = -500;
-
-        for (int i = 0; i < NUM_IRS; i++)
-        {
-            leftwheel += avoid_weightleft[i] * (proximity[i] >> 1);
-            rightwheel += avoid_weightright[i] * (proximity[i] >> 1);
-        }
-    }
     SetSpeed(leftwheel, rightwheel);
-}
-
-void Robot::Flocking()
-{
-    this->Avoidance();
 }
 
 //below defined functions for debugging
@@ -281,10 +242,4 @@ void Robot::PrintProximitySensor()
     for (int i = 0;i < NUM_IRS;i++)
         printf(" %d", this->proximity[i]);
     printf("]\n");
-}
-
-void Robot::PrintState()
-{
-    printf("%ld:%s in state [%s] %d\n", this->pos->GetWorld()->GetUpdateCount(),
-           this->pos->Token(), state_name[this->current_state], (unsigned char)~(1 << 3));
 }

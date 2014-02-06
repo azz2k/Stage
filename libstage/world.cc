@@ -273,6 +273,7 @@ void World::Run()
         }
         std::cout << "Simulation finished" << std::endl;
         simMessages::SimResult result;
+        result.mutable_self()->set_name(job.msg.self().name());
         result.mutable_self()->mutable_pose()->set_x(mythis->GetModel(job.msg.self().name())->pose.x);
         result.mutable_self()->mutable_pose()->set_y(mythis->GetModel(job.msg.self().name())->pose.y);
         result.mutable_self()->mutable_pose()->set_a(mythis->GetModel(job.msg.self().name())->pose.a);

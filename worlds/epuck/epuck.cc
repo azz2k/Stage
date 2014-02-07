@@ -141,6 +141,7 @@ extern "C" int Init( Model* mod )
 }
 
 Robot::Robot(ModelPosition* pos):
+        MAXSPEED(500),
         bumped(0)
 {
     int i = 0;
@@ -203,14 +204,14 @@ int Robot::PositionUpdate( Model* mod, Robot *robot)
 
 void Robot::SetSpeed(int lspeed, int rspeed)
 {
-    if (lspeed < -1000)
-        lspeed = -1000;
-    if (lspeed > 1000)
-        lspeed = 1000;
-    if (rspeed < -1000)
-        rspeed = -1000;
-    if (rspeed > 1000)
-        rspeed = 1000;
+    if (lspeed < -MAXSPEED)
+        lspeed = -MAXSPEED;
+    if (lspeed > MAXSPEED)
+        lspeed = MAXSPEED;
+    if (rspeed < -MAXSPEED)
+        rspeed = -MAXSPEED;
+    if (rspeed > MAXSPEED)
+        rspeed = MAXSPEED;
 
     double x, a;
 
@@ -224,8 +225,8 @@ void Robot::Avoidance()
 {
     int leftwheel, rightwheel;
 
-    leftwheel = 200;
-    rightwheel = 200;
+    leftwheel = 400;
+    rightwheel = 400;
 
     for (int i = 0; i < NUM_IRS; i++)
     {

@@ -17,6 +17,7 @@ private:
 	ModelRanger* ir;
 	static int IRUpdate( Model* , Robot *);
 	static int PositionUpdate( Model* , Robot* );
+  int MAXSPEED;
 
 public:
 	Robot(ModelPosition* pos);

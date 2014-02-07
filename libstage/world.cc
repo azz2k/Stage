@@ -277,7 +277,6 @@ void World::Run()
         result.mutable_self()->mutable_pose()->set_x(mythis->GetModel(job.msg.self().name())->pose.x);
         result.mutable_self()->mutable_pose()->set_y(mythis->GetModel(job.msg.self().name())->pose.y);
         result.mutable_self()->mutable_pose()->set_a(mythis->GetModel(job.msg.self().name())->pose.a);
-        result.mutable_self()->set_program(job.msg.self().program());
         if(job.msg.other_size() > 0)
         {
           for(int i=0; i < job.msg.other_size(); i++)
@@ -287,7 +286,6 @@ void World::Run()
             other->mutable_pose()->set_x(mythis->GetModel(job.msg.other(i).name())->pose.x);
             other->mutable_pose()->set_y(mythis->GetModel(job.msg.other(i).name())->pose.y);
             other->mutable_pose()->set_a(mythis->GetModel(job.msg.other(i).name())->pose.a);
-            other->set_program(job.msg.other(i).program());
           }
         }
         std::string serializedResult;

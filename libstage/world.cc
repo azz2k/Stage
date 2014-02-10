@@ -267,11 +267,19 @@ void World::Run()
         }
         std::cout << "Starting simulation" << std::endl;
         usec_t startTime = mythis->sim_time;
+        std::cout <<  mythis->GetModel(job.msg.self().name())->pose.x << " "
+          <<  mythis->GetModel(job.msg.self().name())->pose.y << " "
+          <<  mythis->GetModel(job.msg.self().name())->pose.a << " "
+          << std::endl;
         while(mythis->sim_time < startTime + job.msg.dt()*1e6)
         {
           UpdateAll();
         }
         std::cout << "Simulation finished" << std::endl;
+        std::cout <<  mythis->GetModel(job.msg.self().name())->pose.x << " "
+          <<  mythis->GetModel(job.msg.self().name())->pose.y << " "
+          <<  mythis->GetModel(job.msg.self().name())->pose.a << " "
+          << std::endl;
         simMessages::SimResult result;
         result.mutable_self()->set_name(job.msg.self().name());
         result.mutable_self()->mutable_pose()->set_x(mythis->GetModel(job.msg.self().name())->pose.x);
@@ -375,7 +383,7 @@ void *World::receiveSimJobs(void)
       simMessages::SimRequest msg;
       if(msg.ParseFromString(msgRaw))
       {
-        std::cout << "received a message from" << inet_ntoa(client.sin_addr) << ":" << ntohs(client.sin_port) << std::endl;
+        std::cout << "received a message from " << inet_ntoa(client.sin_addr) << ":" << ntohs(client.sin_port) << std::endl;
         struct World::SimJob job;
         job.msg = msg;
         job.clientsd = clientsd;

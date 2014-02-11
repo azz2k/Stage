@@ -298,8 +298,9 @@ void World::Run()
         }
         std::string serializedResult;
         result.SerializeToString(&serializedResult);
-        serializedResult.append("\r\n");
-        sendto(job.clientsd, serializedResult.c_str(), serializedResult.size()*sizeof(char), 0, (struct sockaddr*) &job.client, sizeof(job.client));
+        serializedResult.append("*#D#*");
+        int txlen = sendto(job.clientsd, serializedResult.c_str(), serializedResult.size()*sizeof(char), 0, (struct sockaddr*) &job.client, sizeof(job.client));
+        std::cout << "sending message of size: " << serializedResult.size() << " to " <<  inet_ntoa(job.client.sin_addr) << ":" << ntohs(job.client.sin_port) << " sent: " << txlen << std::endl;
       }
     }
   }
@@ -375,15 +376,15 @@ void *World::receiveSimJobs(void)
       continue;
     msgStream.append(std::string(buf, rxlen));
 
-    size_t delimPos = msgStream.find("\r\n");
+    size_t delimPos = msgStream.find("*#D#*");
     if(delimPos != std::string::npos)
     {
       std::string msgRaw = msgStream.substr(0, delimPos);
-      msgStream.erase(0, delimPos+2);
+      msgStream.erase(0, delimPos+5);
       simMessages::SimRequest msg;
+      std::cout << "received a message of size " << msgRaw.size() << " from " << inet_ntoa(client.sin_addr) << ":" << ntohs(client.sin_port) << std::endl;
       if(msg.ParseFromString(msgRaw))
       {
-        std::cout << "received a message from " << inet_ntoa(client.sin_addr) << ":" << ntohs(client.sin_port) << std::endl;
         struct World::SimJob job;
         job.msg = msg;
         job.clientsd = clientsd;

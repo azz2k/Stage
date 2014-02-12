@@ -301,6 +301,8 @@ void World::Run()
         serializedResult.append("*#D#*");
         int txlen = sendto(job.clientsd, serializedResult.c_str(), serializedResult.size()*sizeof(char), 0, (struct sockaddr*) &job.client, sizeof(job.client));
         std::cout << "sending message of size: " << serializedResult.size() << " to " <<  inet_ntoa(job.client.sin_addr) << ":" << ntohs(job.client.sin_port) << " sent: " << txlen << std::endl;
+        std::cout << "self begin: " << job.msg.self().pose().x() << " " << job.msg.self().pose().y() << " " << job.msg.self().pose().a() << std::endl;
+        std::cout << "self end:   " << result.self().pose().x() << " " << result.self().pose().y() << " " << result.self().pose().a() << std::endl;
       }
     }
   }

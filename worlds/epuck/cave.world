@@ -3,7 +3,7 @@
 include "epuck.inc"
 include "../map.inc"
 
-speedup -1
+speedup 1
 
 resolution 0.005
 
@@ -21,9 +21,9 @@ window
 floorplan
 ( 
   name "cave"
-  size [4.000 4.000 0.100]
+  size [2.200 1.800 0.100]
   pose [0 0 0 0]
-  bitmap "brl.png"
+  bitmap "arena.png"
 )
 
 # initialize epuck

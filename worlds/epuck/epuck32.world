@@ -1,0 +1,33 @@
+#first world
+
+include "epuck.inc"
+include "../map.inc"
+
+stagePort 8732
+
+speedup -1
+
+resolution 0.005
+
+threads 1
+
+window
+(
+  size [ 1076.000 585.000 ]
+  center [-0.464 1.570]
+  rotate [ 58.500 17.500 ]
+  scale 153.439 
+)
+
+# load an environment bitmap
+floorplan
+( 
+  name "cave"
+  size [2.200 1.800 0.100]
+  pose [0 0 0 0]
+  bitmap "arena.png"
+)
+
+# initialize epuck
+epuck(	color "red" name "epuck22" pose [0.000 0.000 0 0.000] )
+epuck(	color "blue" name "epuck32" pose [0.000 0.000 0 0.000] )

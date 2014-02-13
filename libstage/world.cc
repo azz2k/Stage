@@ -315,7 +315,8 @@ void *World::receiveSimJobs(void)
   struct sockaddr_in local_addr;
   
   // parse command line
-  port = 8765;
+  World *mythis = *World::world_set.begin();
+  port = mythis->wf->ReadInt(0, "stagePort", -1);
   
   // create socket
   sd = socket(AF_INET, SOCK_STREAM, 0);

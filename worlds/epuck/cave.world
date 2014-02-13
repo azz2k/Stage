@@ -3,6 +3,8 @@
 include "epuck.inc"
 include "../map.inc"
 
+stagePort 8765
+
 speedup 1
 
 resolution 0.005

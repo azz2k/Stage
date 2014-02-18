@@ -131,6 +131,6 @@ define epuck epuck_base
   epuck_ir(pose [ 0 0 -0.01 0 ])
   #camera( size [0.003 0.006 0.006] pose [ 0.034  0 -0.02 0 ]  range [ 0.05 1.0 ] resolution [ 100 100 ] fov [ 60 40 ] pantilt [ 0 0 ] )
   epuck_blobfinder(pose [ 0 0 -0.01 0 ])
-  ctrl "epuck"  
+  ctrl "epuckAvoidance"  
 )
 

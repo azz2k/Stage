@@ -1,7 +1,7 @@
-SET( epuckSrcs epuck.cc )
-ADD_LIBRARY( epuck MODULE ${epuckSrcs} )
-TARGET_LINK_LIBRARIES( epuck stage )
+SET(epuckSrcs epuckAvoidance.cc)
 set_source_files_properties( ${epuckSrcs} PROPERTIES COMPILE_FLAGS "${FLTK_CFLAGS}" )
-SET_TARGET_PROPERTIES( epuck PROPERTIES PREFIX "" )
+ADD_LIBRARY( epuckAvoidance MODULE ${epuckSrcs} )
+TARGET_LINK_LIBRARIES( epuckAvoidance stage )
+SET_TARGET_PROPERTIES( epuckAvoidance PROPERTIES PREFIX "" )
 
-INSTALL( TARGETS epuck DESTINATION ${PROJECT_PLUGIN_DIR})
+INSTALL( TARGETS epuckAvoidance DESTINATION ${PROJECT_PLUGIN_DIR})

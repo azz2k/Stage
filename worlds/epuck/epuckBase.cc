@@ -1,4 +1,6 @@
-#include "epuck.hh"
+#ifndef EPUCKBASE_CC
+#define EPUCKBASE_CC
+#include "epuckBase.hh"
 #include <iostream>
 
 int avoid_weightleft[8] = { -8, -3, -1, 2, 2, 1, 3, 6};
@@ -136,11 +138,11 @@ double proximity_data[][2]={
 // Stage calls this when the model starts up
 extern "C" int Init( Model* mod )
 {
-    Robot *robot = new Robot((ModelPosition*)mod);
+    RobotBase *robot = new RobotBase((ModelPosition*)mod);
     return 0; //ok
 }
 
-Robot::Robot(ModelPosition* pos):
+RobotBase::RobotBase(ModelPosition* pos):
         MAXSPEED(500),
         bumped(0)
 {
@@ -162,7 +164,7 @@ Robot::Robot(ModelPosition* pos):
     }
 }
 
-Robot::~Robot()
+RobotBase::~RobotBase()
 {
   //  printf("Destroy robot: %s\n", this->pos->Token());
     if (name)
@@ -173,7 +175,7 @@ Robot::~Robot()
 }
 
 // inspect the laser data and decide what to do
-int Robot::IRUpdate( Model* mod, Robot *robot )
+int RobotBase::IRUpdate( Model* mod, RobotBase *robot )
 {
 	
     robot->bumped = 0;
@@ -196,13 +198,7 @@ int Robot::IRUpdate( Model* mod, Robot *robot )
     return 0;
 }
 
-int Robot::PositionUpdate( Model* mod, Robot *robot)
-{
-  robot->Avoidance();
-  return 0;
-}
-
-void Robot::SetSpeed(int lspeed, int rspeed)
+void RobotBase::SetSpeed(int lspeed, int rspeed)
 {
     if (lspeed < -MAXSPEED)
         lspeed = -MAXSPEED;
@@ -221,7 +217,7 @@ void Robot::SetSpeed(int lspeed, int rspeed)
     this->pos->SetSpeed(x, 0, a);
 }
 
-void Robot::Avoidance()
+void RobotBase::Avoidance()
 {
     int leftwheel, rightwheel;
 
@@ -237,10 +233,12 @@ void Robot::Avoidance()
 }
 
 //below defined functions for debugging
-void Robot::PrintProximitySensor()
+void RobotBase::PrintProximitySensor()
 {
     printf("%ld:%s IR --[", this->pos->GetWorld()->GetUpdateCount(), this->pos->Token());
     for (int i = 0;i < NUM_IRS;i++)
         printf(" %d", this->proximity[i]);
     printf("]\n");
 }
+
+#endif

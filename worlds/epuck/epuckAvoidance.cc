@@ -11,7 +11,10 @@ class RobotAvoidance: public RobotBase
   protected:
     virtual int myPositionUpdate(Model* model, RobotBase* robot)
     {
-      robot->Avoidance();
+      this->GoStraight(0.8);
+      this->Avoidance();
+      
+      this->SetSpeed(LeftWheelVelocity,RightWheelVelocity);
       return 0;
     }
 

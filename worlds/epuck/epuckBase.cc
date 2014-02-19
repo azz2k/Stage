@@ -211,19 +211,77 @@ void RobotBase::SetSpeed(int lspeed, int rspeed)
     this->pos->SetSpeed(x, 0, a);
 }
 
+void RobotBase::GoStraight(float speed)
+{
+  if(speed > 1.0)
+    speed = 1.0;
+  if(speed < -1.0)
+    speed = -1.0;
+  RightWheelVelocity = speed*MAXSPEED;
+  LeftWheelVelocity = speed*MAXSPEED;
+}
+
+void RobotBase::TurnLeft()
+{
+  RightWheelVelocity = MAXSPEED*0.2;
+  LeftWheelVelocity = -MAXSPEED*0.2;
+}
+
+void RobotBase::TurnRight()
+{
+  RightWheelVelocity = -MAXSPEED*0.2;
+  LeftWheelVelocity = MAXSPEED*0.2;
+}
+
+bool RobotBase::Stop()
+{
+    LeftWheelVelocity = 0;
+    RightWheelVelocity = 0;
+    this->SetSpeed(LeftWheelVelocity, RightWheelVelocity);
+    return true;
+}
+
+void RobotBase::Follow(std::string name, float desiredDist)
+{
+  LeftWheelVelocity  = 0.0;
+  RightWheelVelocity = 0.0;
+//  if(robotsReal.find(name) != robotsReal.end())
+  {
+    float myx = this->pos->est_pose.x;
+    float myy = this->pos->est_pose.y;
+    float mya = this->pos->est_pose.a;
+    float otherx = this->myModel->GetWorld()->GetModel(name)->GetGlobalPose().x;
+    float othery = this->myModel->GetWorld()->GetModel(name)->GetGlobalPose().y;
+
+    float newa = atan2(othery-myy, otherx-myx);
+    float steera = 500.0*(newa-mya);
+    
+    float dist2 = (myx-otherx)*(myx-otherx) + (myy-othery)*(myy-othery);
+    float steerd = 5000.0*(sqrt(dist2) - sqrt(desiredDist*desiredDist));
+    if(steerd < 0.0)
+      steerd *= 10.0;
+    if(steerd > this->MAXSPEED)
+      steerd = this->MAXSPEED;
+    if(steerd < -this->MAXSPEED)
+      steerd = -this->MAXSPEED;
+
+    LeftWheelVelocity  = -steera + steerd;
+    RightWheelVelocity = steera + steerd;
+
+//    std::cout << robotsReal.size() << " " << robotsSim.size() << std::endl;
+//    std::cout << "me: " << myx << " " << myy << " other: " << otherx << " " <<othery << std::endl;
+//    std::cout << mya << " " << newa << " " << steera << std::endl;
+//    std::cout << sqrt(dist2) << " " << desiredDist << " " << steerd << std::endl;
+  }
+}
+
 void RobotBase::Avoidance()
 {
-    int leftwheel, rightwheel;
-
-    leftwheel = 400;
-    rightwheel = 400;
-
     for (int i = 0; i < NUM_IRS; i++)
     {
-        leftwheel += avoid_weightleft[i] * (proximity[i]);
-        rightwheel += avoid_weightright[i] * (proximity[i]);
+        LeftWheelVelocity += avoid_weightleft[i] * (proximity[i]);
+        RightWheelVelocity += avoid_weightright[i] * (proximity[i]);
     }
-    SetSpeed(leftwheel, rightwheel);
 }
 
 //below defined functions for debugging

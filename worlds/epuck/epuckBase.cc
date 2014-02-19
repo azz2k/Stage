@@ -135,17 +135,11 @@ double proximity_data[][2]={
 	{2.00,	0.24},
 	{1.40,	0.24}};
 
-// Stage calls this when the model starts up
-extern "C" int Init( Model* mod )
-{
-    RobotBase *robot = new RobotBase((ModelPosition*)mod);
-    return 0; //ok
-}
-
 RobotBase::RobotBase(ModelPosition* pos):
         MAXSPEED(500),
         bumped(0)
 {
+    std::cout << "RobotBase constructor" << std::endl;
     int i = 0;
     this->pos = pos;
     this->pos->AddCallback(Model::CB_UPDATE, (model_callback_t)this->PositionUpdate, this);

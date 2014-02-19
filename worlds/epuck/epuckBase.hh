@@ -18,6 +18,7 @@ class RobotBase
     static int IRUpdate( Model* , RobotBase *);
     static int PositionUpdate( Model* model, RobotBase* robot) 
     {
+      std::cout << "PositionUpdate() called" << std::endl;
       return robot->myPositionUpdate(model, robot);
     }
     virtual int myPositionUpdate(Model* model, RobotBase* robot) 

@@ -8,19 +8,19 @@ using namespace Stg;
 
 class RobotAvoidance: public RobotBase
 {
-  private:
-    int myPositionUpdate(Model* model, RobotBase* robot)
+  protected:
+    virtual int myPositionUpdate(Model* model, RobotBase* robot)
     {
-      std::cout << "RobotAvoidance::myPositionUpdate() was called correctly" << std::endl;
       robot->Avoidance();
       return 0;
     }
 
-
   public:
     RobotAvoidance(ModelPosition* pos):
       RobotBase(pos)
-    { }
+    {
+      std::cout << "RobotAvoidance constructor" << std::endl;
+    }
     ~RobotAvoidance()
     {
       if (name)
@@ -29,6 +29,13 @@ class RobotAvoidance: public RobotBase
           name = NULL;
       }
     }
-  };
+};
+
+// Stage calls this when the model starts up
+extern "C" int Init( Model* mod )
+{
+    RobotAvoidance *robot = new RobotAvoidance((ModelPosition*)mod);
+    return 0; //ok
+}
 
 #endif

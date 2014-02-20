@@ -1,17 +1,17 @@
-#ifndef EPUCKAVOIDANCE_HH
-#define EPUCKAVOIDANCE_HH
+#ifndef EPUCKFOLLOW_HH
+#define EPUCKFOLLOW_HH
 #include <stage.hh>
 
 using namespace Stg;
 
 #include "epuckBase.cc"
 
-class RobotAvoidance: public RobotBase
+class RobotFollow: public RobotBase
 {
   protected:
     virtual int myPositionUpdate(Model* model, RobotBase* robot)
     {
-      this->GoStraight(0.6);
+      this->MoveTo(0.0, 0.0);
       this->Avoidance();
       
       this->SetSpeed(LeftWheelVelocity,RightWheelVelocity);
@@ -19,12 +19,12 @@ class RobotAvoidance: public RobotBase
     }
 
   public:
-    RobotAvoidance(ModelPosition* pos):
+    RobotFollow(ModelPosition* pos):
       RobotBase(pos)
     {
-      std::cout << "RobotAvoidance constructor" << std::endl;
+      std::cout << "RobotFollow constructor" << std::endl;
     }
-    ~RobotAvoidance()
+    ~RobotFollow()
     {
       if (name)
       {
@@ -37,7 +37,7 @@ class RobotAvoidance: public RobotBase
 // Stage calls this when the model starts up
 extern "C" int Init( Model* mod )
 {
-    RobotAvoidance *robot = new RobotAvoidance((ModelPosition*)mod);
+    RobotFollow *robot = new RobotFollow((ModelPosition*)mod);
     return 0; //ok
 }
 

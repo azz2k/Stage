@@ -2,6 +2,7 @@
 #define EPUCKBASE_CC
 #include "epuckBase.hh"
 #include <iostream>
+#include <ctime>
 
 int avoid_weightleft[8] = { -8, -3, -1, 2, 2, 1, 3, 6};
 int avoid_weightright[8] = {6, 3, 1, 2, 2, -1, -3, -8};
@@ -136,8 +137,9 @@ double proximity_data[][2]={
 	{1.40,	0.24}};
 
 RobotBase::RobotBase(ModelPosition* pos):
-        MAXSPEED(500),
-        bumped(0)
+  rng(static_cast<unsigned int>(std::time(0))),
+  MAXSPEED(600),
+  bumped(0)
 {
     std::cout << "RobotBase constructor" << std::endl;
     int i = 0;
@@ -243,18 +245,27 @@ bool RobotBase::Stop()
 
 void RobotBase::Follow(std::string name, float desiredDist)
 {
+  boost::normal_distribution<> xygauss(0.0, 0.0);
+  boost::normal_distribution<> agauss(0.0, 0.0);
+  boost::variate_generator<boost::mt19937&, boost::normal_distribution<> > xygen(this->rng, xygauss);
+  boost::variate_generator<boost::mt19937&, boost::normal_distribution<> > agen(this->rng, agauss);
   LeftWheelVelocity  = 0.0;
   RightWheelVelocity = 0.0;
 //  if(robotsReal.find(name) != robotsReal.end())
   {
-    float myx = this->pos->est_pose.x;
-    float myy = this->pos->est_pose.y;
-    float mya = this->pos->est_pose.a;
-    float otherx = this->myModel->GetWorld()->GetModel(name)->GetGlobalPose().x;
-    float othery = this->myModel->GetWorld()->GetModel(name)->GetGlobalPose().y;
+    float myx = this->pos->est_pose.x + xygen();
+    float myy = this->pos->est_pose.y + xygen();
+    float mya = this->pos->est_pose.a + agen();
+    float otherx = this->myModel->GetWorld()->GetModel(name)->GetGlobalPose().x + xygen();
+    float othery = this->myModel->GetWorld()->GetModel(name)->GetGlobalPose().y + xygen();
 
     float newa = atan2(othery-myy, otherx-myx);
-    float steera = 500.0*(newa-mya);
+    float steera = newa-mya;
+    if(steera > M_PI)
+      steera -= 2.0*M_PI;
+    if(steera < -M_PI)
+      steera += 2.0*M_PI;
+    steera *= 500;
     
     float dist2 = (myx-otherx)*(myx-otherx) + (myy-othery)*(myy-othery);
     float steerd = 5000.0*(sqrt(dist2) - sqrt(desiredDist*desiredDist));
@@ -273,6 +284,37 @@ void RobotBase::Follow(std::string name, float desiredDist)
 //    std::cout << mya << " " << newa << " " << steera << std::endl;
 //    std::cout << sqrt(dist2) << " " << desiredDist << " " << steerd << std::endl;
   }
+}
+
+void RobotBase::MoveTo(float x, float y)
+{
+  float myx = this->pos->est_pose.x;
+  float myy = this->pos->est_pose.y;
+  float mya = this->pos->est_pose.a;
+
+  float newa = atan2(y-myy, x-myx);
+  float steera = newa-mya;
+  if(steera > M_PI)
+    steera -= 2.0*M_PI;
+  if(steera < -M_PI)
+    steera += 2.0*M_PI;
+  steera *= 500;
+  
+  float dist = sqrt((myx-x)*(myx-x) + (myy-y)*(myy-y));
+  if(dist < 1e-2)
+  {
+    LeftWheelVelocity  = 0.0;
+    RightWheelVelocity = 0.0;
+    return;
+  }
+  float steerd = 5000.0*dist;
+  if(steerd > this->MAXSPEED)
+    steerd = this->MAXSPEED;
+  if(steerd < -this->MAXSPEED)
+    steerd = -this->MAXSPEED;
+
+  LeftWheelVelocity  = -steera + steerd;
+  RightWheelVelocity = steera + steerd;
 }
 
 void RobotBase::Avoidance()

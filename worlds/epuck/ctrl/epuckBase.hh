@@ -1,6 +1,8 @@
 #ifndef EPUCKBASE_HH
 #define EPUCKBASE_HH
 #include <stage.hh>
+#include <boost/random.hpp>
+#include <boost/random/normal_distribution.hpp>
 
 using namespace Stg;
 
@@ -27,6 +29,7 @@ class RobotBase
       std::cout << "RobotBase::myPositionUpdate() was called, which should never happen" << std::endl;
       return -1;
     }
+    boost::mt19937 rng;
     int MAXSPEED;
     float LeftWheelVelocity;
     float RightWheelVelocity;
@@ -41,6 +44,7 @@ class RobotBase
     void TurnRight();
     bool Stop();
     void Follow(std::string name, float desiredDist);
+    void MoveTo(float x, float y);
     void Avoidance();
     
     void PrintProximitySensor();

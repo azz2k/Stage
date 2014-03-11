@@ -204,17 +204,25 @@ int RobotBase::PositionUpdate( Model* model, RobotBase* robot)
   robot->myModel = model;
  
   std::vector<std::string> commands;
-  int pos = 0;
-  while(pos != std::string::npos)
+  size_t pos = 0;
+  while(true)
   {
-    std::cout << "foo" << std::endl;
-    int nextpos = robot->ctrlString.find_first_of(";", pos);
-    commands.push_back(robot->ctrlString.substr(pos, nextpos));
-    pos = nextpos;
+    size_t nextpos = robot->ctrlString.find_first_of(";", pos);
+    if(nextpos == std::string::npos)
+    {
+      commands.push_back(robot->ctrlString.substr(pos, robot->ctrlString.size()-1));
+      break;
+    } else
+    {
+      commands.push_back(robot->ctrlString.substr(pos, nextpos));
+      pos = nextpos+1;
+    }
   }
 
-  std::cout << robot->ctrlString << std::endl;
-  std::cout << commands.size() << std::endl;
+  for(std::vector<std::string>::iterator command = commands.begin(); command != commands.end(); command++)
+  {
+    std::cout << *command << std::endl;
+  }
 
   robot->SetSpeed(robot->LeftWheelVelocity, robot->RightWheelVelocity);
   return 0;

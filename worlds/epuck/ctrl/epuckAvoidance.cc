@@ -8,21 +8,12 @@ using namespace Stg;
 
 class RobotAvoidance: public RobotBase
 {
-  protected:
-    virtual int myPositionUpdate(Model* model, RobotBase* robot)
-    {
-      this->GoStraight(0.6);
-      this->Avoidance();
-      
-      this->SetSpeed(LeftWheelVelocity,RightWheelVelocity);
-      return 0;
-    }
-
   public:
     RobotAvoidance(ModelPosition* pos):
       RobotBase(pos)
     {
       std::cout << "RobotAvoidance constructor" << std::endl;
+      this->ctrlString = "GoStraight 0.6;Avoidance";
     }
     ~RobotAvoidance()
     {

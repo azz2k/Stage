@@ -202,15 +202,20 @@ int RobotBase::IRUpdate( Model* mod, RobotBase *robot )
 int RobotBase::PositionUpdate( Model* model, RobotBase* robot) 
 {
   robot->myModel = model;
-  return robot->myPositionUpdate(model, robot);
+ 
+  std::vector<std::string> commands;
+  int pos = 0;
+  while(pos != std::string::npos)
+  {
+    int nextpos = robot->ctrlString.find_first_of(";", pos);
+    commands.push_back(robot->ctrlString.substr(pos, nextpos));
+    pos = nextpos;
+  }
+
+  robot->SetSpeed(robot->LeftWheelVelocity, robot->RightWheelVelocity);
+  return 0;
 }
     
-int RobotBase::myPositionUpdate(Model* model, RobotBase* robot) 
-{
-  std::cout << "RobotBase::myPositionUpdate() was called, which should never happen" << std::endl;
-  return -1;
-}
-
 void RobotBase::SetSpeed(int lspeed, int rspeed)
 {
     if (lspeed < -MAXSPEED)

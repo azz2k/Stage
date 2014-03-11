@@ -20,7 +20,6 @@ class RobotBase
     ModelRanger* ir;
     static int IRUpdate( Model* , RobotBase *);
     static int PositionUpdate( Model* model, RobotBase* robot); 
-    virtual int myPositionUpdate(Model* model, RobotBase* robot); 
     boost::mt19937 rng;
     int MAXSPEED;
     float LeftWheelVelocity;

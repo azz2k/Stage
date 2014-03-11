@@ -8,21 +8,12 @@ using namespace Stg;
 
 class RobotFollow: public RobotBase
 {
-  protected:
-    virtual int myPositionUpdate(Model* model, RobotBase* robot)
-    {
-      this->Follow("epuck32", 0.3);
-      this->Avoidance();
-      
-      this->SetSpeed(LeftWheelVelocity,RightWheelVelocity);
-      return 0;
-    }
-
   public:
     RobotFollow(ModelPosition* pos):
       RobotBase(pos)
     {
       std::cout << "RobotFollow constructor" << std::endl;
+      this->ctrlString = "Follow epuck32 0.3;Avoidance";
     }
     ~RobotFollow()
     {

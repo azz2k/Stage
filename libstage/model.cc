@@ -1522,7 +1522,7 @@ void Model::Load()
       for( unsigned int index=0; index < ctrlp->values.size(); index++ )
 	{
 			 
-	  const char* lib = wf->GetPropertyValue( ctrlp, index );
+    const char* lib = wf->GetPropertyValue( ctrlp, index );
 			 
 	  if( !lib )
 	    printf( "Error - NULL library name specified for model %s\n", Token() );
@@ -1639,7 +1639,7 @@ void Model::LoadControllerModule( const char* lib )
   if(( handle = lt_dlopenext( libname ) ))
     {
       //printf( "]" );
-		
+
       model_callback_t initfunc = (model_callback_t)lt_dlsym( handle, "Init" );
       if( initfunc  == NULL )
 	{

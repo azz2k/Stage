@@ -19,20 +19,13 @@ class RobotBase
     ModelPosition* pos;
     ModelRanger* ir;
     static int IRUpdate( Model* , RobotBase *);
-    static int PositionUpdate( Model* model, RobotBase* robot) 
-    {
-      robot->myModel = model;
-      return robot->myPositionUpdate(model, robot);
-    }
-    virtual int myPositionUpdate(Model* model, RobotBase* robot) 
-    {
-      std::cout << "RobotBase::myPositionUpdate() was called, which should never happen" << std::endl;
-      return -1;
-    }
+    static int PositionUpdate( Model* model, RobotBase* robot); 
+    virtual int myPositionUpdate(Model* model, RobotBase* robot); 
     boost::mt19937 rng;
     int MAXSPEED;
     float LeftWheelVelocity;
     float RightWheelVelocity;
+    std::string ctrlString;
 
   public:
     RobotBase(ModelPosition* pos);

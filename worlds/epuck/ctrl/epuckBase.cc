@@ -3,6 +3,7 @@
 #include "epuckBase.hh"
 #include <iostream>
 #include <ctime>
+#include <map>
 
 int avoid_weightleft[8] = { -8, -3, -1, 2, 2, 1, 3, 6};
 int avoid_weightright[8] = {6, 3, 1, 2, 2, -1, -3, -8};
@@ -136,12 +137,16 @@ double proximity_data[][2]={
 	{2.00,	0.24},
 	{1.40,	0.24}};
 
+static std::map<std::string, RobotBase*> allRobotCtrl;
+
+
 RobotBase::RobotBase(ModelPosition* pos):
   rng(static_cast<unsigned int>(std::time(0))),
   MAXSPEED(600),
   bumped(0)
 {
-    std::cout << "RobotBase constructor" << std::endl;
+    std::cout << "RobotBase constructor for " << pos->TokenStr() << std::endl;
+    allRobotCtrl[pos->TokenStr()] = this;
     int i = 0;
     this->pos = pos;
     this->pos->AddCallback(Model::CB_UPDATE, (model_callback_t)this->PositionUpdate, this);
@@ -192,6 +197,18 @@ int RobotBase::IRUpdate( Model* mod, RobotBase *robot )
             robot->bumped |= 1 << i;
     }
     return 0;
+}
+
+int RobotBase::PositionUpdate( Model* model, RobotBase* robot) 
+{
+  robot->myModel = model;
+  return robot->myPositionUpdate(model, robot);
+}
+    
+int RobotBase::myPositionUpdate(Model* model, RobotBase* robot) 
+{
+  std::cout << "RobotBase::myPositionUpdate() was called, which should never happen" << std::endl;
+  return -1;
 }
 
 void RobotBase::SetSpeed(int lspeed, int rspeed)

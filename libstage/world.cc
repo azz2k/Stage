@@ -108,6 +108,8 @@ using namespace Stg;
 #include <iostream>
 #include <queue>
 #include "../../protobuf/lib/sim.pb.h"
+#include "../worlds/epuck/ctrl/epuckBase.cc"
+
 
 // // function objects for comparing model positions
 bool World::ltx::operator()(const Model* a, const Model* b) const
@@ -237,6 +239,7 @@ void World::Run()
   else
   {
     World *mythis = *World::world_set.begin();
+    std::cout << "number of controllers active: " << allRobotCtrl.size() << std::endl;
     pthread_create(&(mythis->simJobsThread), NULL, &World::receiveSimJobsHelper, mythis);
     while(true)
     {

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <ctime>
 #include <map>
+#include <sstream>
 
 int avoid_weightleft[8] = { -8, -3, -1, 2, 2, 1, 3, 6};
 int avoid_weightright[8] = {6, 3, 1, 2, 2, -1, -3, -8};
@@ -210,18 +211,53 @@ int RobotBase::PositionUpdate( Model* model, RobotBase* robot)
     size_t nextpos = robot->ctrlString.find_first_of(";", pos);
     if(nextpos == std::string::npos)
     {
-      commands.push_back(robot->ctrlString.substr(pos, robot->ctrlString.size()-1));
+      commands.push_back(robot->ctrlString.substr(pos));
       break;
     } else
     {
-      commands.push_back(robot->ctrlString.substr(pos, nextpos));
+      commands.push_back(robot->ctrlString.substr(pos, nextpos-pos));
       pos = nextpos+1;
     }
   }
 
   for(std::vector<std::string>::iterator command = commands.begin(); command != commands.end(); command++)
   {
-    std::cout << *command << std::endl;
+    int delim = command->find_first_of(" ");
+    std::string action = command->substr(0, delim);
+    if(action.compare("GoStraight") == 0)
+    {
+      std::stringstream ss(command->substr(delim+1));
+      double speed;
+      ss >> speed;
+      robot->GoStraight(speed);
+    } else if(action.compare("TurnLeft") == 0)
+    {
+      robot->TurnLeft();
+    } else if(action.compare("TurnRight") == 0)
+    {
+      robot->TurnLeft();
+    } else if(action.compare("Stop") == 0)
+    {
+      robot->Stop();
+    } else if(action.compare("Follow") == 0)
+    {
+      int delim2 = command->find_first_of(" ", delim+1);
+      std::string target = command->substr(delim+1, delim2-(delim+1));
+      std::stringstream ss(command->substr(delim2+1));
+      double dist;
+      ss >> dist;
+      robot->Follow(target, dist);
+    } else if(action.compare("MoveTo") == 0)
+    {
+      std::stringstream ss(command->substr(delim+1));
+      double x, y;
+      ss >> x;
+      ss >> y;
+      robot->MoveTo(x, y);
+    } else if(action.compare("Avoidance") == 0)
+    {
+      robot->Avoidance();
+    }
   }
 
   robot->SetSpeed(robot->LeftWheelVelocity, robot->RightWheelVelocity);

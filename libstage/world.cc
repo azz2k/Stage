@@ -176,6 +176,7 @@ World::World( const std::string& name,
   sim_interval( 1e5 ), // 100 msec has proved a good default
   update_cb_count(0)
 {
+  pthread_mutex_init (&(this->simJobsMutex), NULL);
   if( ! Stg::InitDone() )
     {
       PRINT_WARN( "Stg::Init() must be called before a World is created." );
@@ -395,6 +396,7 @@ void *World::receiveSimJobs(void)
       std::cout << "received a message of size " << msgRaw.size() << " from " << inet_ntoa(client.sin_addr) << ":" << ntohs(client.sin_port) << std::endl;
       if(msg.ParseFromString(msgRaw))
       {
+        std::cout << "correct message" << std::endl;
         struct World::SimJob job;
         job.msg = msg;
         job.clientsd = clientsd;

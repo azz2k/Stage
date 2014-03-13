@@ -220,6 +220,8 @@ int RobotBase::PositionUpdate( Model* model, RobotBase* robot)
     }
   }
 
+  LeftWheelVelocity = 0;
+  RightWheelVelocity = 0;
   for(std::vector<std::string>::iterator command = commands.begin(); command != commands.end(); command++)
   {
     int delim = command->find_first_of(" ");

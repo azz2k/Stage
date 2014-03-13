@@ -29,6 +29,7 @@ class RobotBase
   public:
     RobotBase(ModelPosition* pos);
     ~RobotBase();
+    void SetCtrlString(std::string);
     void SetSpeed(int lspeed, int rspeed);
     
     void GoStraight(float speed); // speed from [-1.0; 1.0]

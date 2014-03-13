@@ -144,6 +144,7 @@ static std::map<std::string, RobotBase*> allRobotCtrl;
 RobotBase::RobotBase(ModelPosition* pos):
   rng(static_cast<unsigned int>(std::time(0))),
   MAXSPEED(600),
+  ctrlString("Stop"),
   bumped(0)
 {
     std::cout << "RobotBase constructor for " << pos->TokenStr() << std::endl;
@@ -174,6 +175,11 @@ RobotBase::~RobotBase()
         free(name);
         name = NULL;
     }
+}
+
+void RobotBase::SetCtrlString(std::string ctrlString)
+{
+  this->ctrlString = ctrlString;
 }
 
 // inspect the laser data and decide what to do

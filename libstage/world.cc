@@ -255,10 +255,11 @@ void World::Run()
         mythis->simJobs.pop();
         pthread_mutex_unlock(&(mythis->simJobsMutex));
         std::cout << "Setting up simulation" << std::endl;
-        std::cout << job.msg.self().name() << std::endl;
+        std::cout << job.msg.self().name() << " : " << job.msg.self().ctrlstring() << std::endl;
         mythis->GetModel(job.msg.self().name())->pose.x = job.msg.self().pose().x();
         mythis->GetModel(job.msg.self().name())->pose.y = job.msg.self().pose().y();
         mythis->GetModel(job.msg.self().name())->pose.a = job.msg.self().pose().a();
+        allRobotCtrl[job.msg.self().name()]->SetCtrlString(job.msg.self().ctrlstring());
         if(job.msg.other_size() > 0)
         {
           for(int i=0; i < job.msg.other_size(); i++)
@@ -266,13 +267,14 @@ void World::Run()
             mythis->GetModel(job.msg.other(i).name())->pose.x = job.msg.other(i).pose().x();
             mythis->GetModel(job.msg.other(i).name())->pose.y = job.msg.other(i).pose().y();
             mythis->GetModel(job.msg.other(i).name())->pose.a = job.msg.other(i).pose().a();
+            allRobotCtrl[job.msg.other(i).name()]->SetCtrlString(job.msg.other(i).ctrlstring());
           }
         }
         std::cout << "Starting simulation" << std::endl;
         usec_t startTime = mythis->sim_time;
         std::cout <<  mythis->GetModel(job.msg.self().name())->pose.x << " "
-          <<  mythis->GetModel(job.msg.self().name())->pose.y << " "
-          <<  mythis->GetModel(job.msg.self().name())->pose.a << " "
+          << mythis->GetModel(job.msg.self().name())->pose.y << " "
+          << mythis->GetModel(job.msg.self().name())->pose.a << " "
           << std::endl;
         while(mythis->sim_time < startTime + job.msg.dt()*1e6)
         {
@@ -288,6 +290,7 @@ void World::Run()
         result.mutable_self()->mutable_pose()->set_x(mythis->GetModel(job.msg.self().name())->pose.x);
         result.mutable_self()->mutable_pose()->set_y(mythis->GetModel(job.msg.self().name())->pose.y);
         result.mutable_self()->mutable_pose()->set_a(mythis->GetModel(job.msg.self().name())->pose.a);
+        result.mutable_self()->set_ctrlstring(job.msg.self().ctrlstring());
         if(job.msg.other_size() > 0)
         {
           for(int i=0; i < job.msg.other_size(); i++)
@@ -297,6 +300,7 @@ void World::Run()
             other->mutable_pose()->set_x(mythis->GetModel(job.msg.other(i).name())->pose.x);
             other->mutable_pose()->set_y(mythis->GetModel(job.msg.other(i).name())->pose.y);
             other->mutable_pose()->set_a(mythis->GetModel(job.msg.other(i).name())->pose.a);
+            other->set_ctrlstring(job.msg.other(i).ctrlstring());
           }
         }
         std::string serializedResult;

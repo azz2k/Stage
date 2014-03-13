@@ -70,7 +70,7 @@
 
 // my includes
 #include <netinet/in.h> // struct sockaddr_in
-#include "../../protobuf/lib/sim.pb.h"
+#include "../../protobuf/lib/epuck.pb.h"
 
 /** @brief The Stage library uses its own namespace */
 namespace Stg 
@@ -912,7 +912,7 @@ namespace Stg
     static void *receiveSimJobsHelper(void *context){return ((World *)context)->receiveSimJobs();}
     struct SimJob
     {
-      simMessages::SimRequest msg;
+      epuckMessages::SimRequest msg;
       int clientsd;
       struct sockaddr_in client;
     };

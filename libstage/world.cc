@@ -107,7 +107,7 @@ using namespace Stg;
 #include <string>
 #include <iostream>
 #include <queue>
-#include "../../protobuf/lib/sim.pb.h"
+#include "../../protobuf/lib/epuck.pb.h"
 #include "../worlds/epuck/ctrl/epuckBase.cc"
 
 
@@ -283,7 +283,7 @@ void World::Run()
           <<  mythis->GetModel(job.msg.self().name())->pose.y << " "
           <<  mythis->GetModel(job.msg.self().name())->pose.a << " "
           << std::endl;
-        simMessages::SimResult result;
+        epuckMessages::SimResult result;
         result.mutable_self()->set_name(job.msg.self().name());
         result.mutable_self()->mutable_pose()->set_x(mythis->GetModel(job.msg.self().name())->pose.x);
         result.mutable_self()->mutable_pose()->set_y(mythis->GetModel(job.msg.self().name())->pose.y);
@@ -292,7 +292,7 @@ void World::Run()
         {
           for(int i=0; i < job.msg.other_size(); i++)
           {
-            simMessages::Robot * other = result.add_other();
+            epuckMessages::SimRobot * other = result.add_other();
             other->set_name(job.msg.other(i).name());
             other->mutable_pose()->set_x(mythis->GetModel(job.msg.other(i).name())->pose.x);
             other->mutable_pose()->set_y(mythis->GetModel(job.msg.other(i).name())->pose.y);
@@ -387,7 +387,7 @@ void *World::receiveSimJobs(void)
     {
       std::string msgRaw = msgStream.substr(0, delimPos);
       msgStream.erase(0, delimPos+5);
-      simMessages::SimRequest msg;
+      epuckMessages::SimRequest msg;
       std::cout << "received a message of size " << msgRaw.size() << " from " << inet_ntoa(client.sin_addr) << ":" << ntohs(client.sin_port) << std::endl;
       if(msg.ParseFromString(msgRaw))
       {

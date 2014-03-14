@@ -304,6 +304,7 @@ void World::Run()
             for(int i=0; i < job.msg.other_size(); i++)
             {
               pose = result.mutable_other(i)->add_history();
+              pose->set_t(job.msg.self().pose().t() + (mythis->sim_time - startTime));
               pose->set_x(mythis->GetModel(job.msg.other(i).name())->pose.x);
               pose->set_y(mythis->GetModel(job.msg.other(i).name())->pose.y);
               pose->set_a(mythis->GetModel(job.msg.other(i).name())->pose.a);

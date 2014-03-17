@@ -180,6 +180,7 @@ RobotBase::~RobotBase()
 void RobotBase::SetCtrlString(std::string ctrlString)
 {
   this->ctrlString = ctrlString;
+  this->SetSpeed(0.0, 0.0);
 }
 
 // inspect the laser data and decide what to do

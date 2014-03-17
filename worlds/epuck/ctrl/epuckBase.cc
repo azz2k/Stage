@@ -243,7 +243,7 @@ int RobotBase::PositionUpdate( Model* model, RobotBase* robot)
       robot->TurnLeft();
     } else if(action.compare("TurnRight") == 0)
     {
-      robot->TurnLeft();
+      robot->TurnRight();
     } else if(action.compare("Stop") == 0)
     {
       robot->Stop();
@@ -297,20 +297,20 @@ void RobotBase::GoStraight(float speed)
     speed = 1.0;
   if(speed < -1.0)
     speed = -1.0;
-  RightWheelVelocity = speed*MAXSPEED;
-  LeftWheelVelocity = speed*MAXSPEED;
+  RightWheelVelocity += speed*MAXSPEED;
+  LeftWheelVelocity += speed*MAXSPEED;
 }
 
 void RobotBase::TurnLeft()
 {
-  RightWheelVelocity = MAXSPEED*0.2;
-  LeftWheelVelocity = -MAXSPEED*0.2;
+  RightWheelVelocity += MAXSPEED*0.2;
+  LeftWheelVelocity -= MAXSPEED*0.2;
 }
 
 void RobotBase::TurnRight()
 {
-  RightWheelVelocity = -MAXSPEED*0.2;
-  LeftWheelVelocity = MAXSPEED*0.2;
+  RightWheelVelocity -= MAXSPEED*0.2;
+  LeftWheelVelocity += MAXSPEED*0.2;
 }
 
 bool RobotBase::Stop()

@@ -14,9 +14,9 @@ threads 1
 window
 (
   size [ 1076.000 585.000 ]
-  center [-0.464 1.570]
+  center [0.000 0.000]
   rotate [ 58.500 17.500 ]
-  scale 153.439 
+  scale 253.439 
 )
 
 # load an environment bitmap
@@ -29,9 +29,9 @@ floorplan
 )
 
 # initialize epuck
-epuck(	color "red" name "epuck1" pose [0.500 0.500 0 45.000] ctrl "epuckMoveTo")
-epuck(	color "red" name "epuck2" pose [-0.500 0.500 0 135.000] ctrl "epuckMoveTo")
-epuck(	color "red" name "epuck3" pose [-0.500 -0.500 0 -135.000] ctrl "epuckMoveTo")
-epuck(	color "red" name "epuck4" pose [0.500 -0.500 0 -45.000] ctrl "epuckMoveTo")
-epuck(	color "red" name "epuck32" pose [0.500 -0.600 0 -45.000] ctrl "epuckAvoidance")
-epuck(	color "red" name "epuck22" pose [0.600 -0.600 0 -45.000] ctrl "epuckFollow")
+#epuck(	color "red" name "epuck1" pose [0.500 0.500 0 45.000] ctrl "epuckMoveTo")
+#epuck(	color "red" name "epuck2" pose [-0.500 0.500 0 135.000] ctrl "epuckMoveTo")
+#epuck(	color "red" name "epuck3" pose [-0.500 -0.500 0 -135.000] ctrl "epuckMoveTo")
+#epuck(	color "red" name "epuck4" pose [0.500 -0.500 0 -45.000] ctrl "epuckMoveTo")
+epuck(color "blue" name "epuck32" pose [-0.000 -0.200 0 90.000] ctrl "epuckTurnLeft")
+#epuck(color "red" name "epuck22" pose [-0.300 -0.000 0 0.000] ctrl "epuckAvoidance")

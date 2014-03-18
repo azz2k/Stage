@@ -236,19 +236,19 @@ int RobotBase::PositionUpdate( Model* model, RobotBase* robot)
     if(action.compare("GoStraight") == 0)
     {
       std::stringstream ss(command->substr(delim+1));
-      double speed;
+      float speed;
       ss >> speed;
       robot->GoStraight(speed);
     } else if(action.compare("TurnLeft") == 0)
     {
       std::stringstream ss(command->substr(delim+1));
-      double speed;
+      float speed;
       ss >> speed;
       robot->TurnLeft(speed);
     } else if(action.compare("TurnRight") == 0)
     {
       std::stringstream ss(command->substr(delim+1));
-      double speed;
+      float speed;
       ss >> speed;
       robot->TurnRight(speed);
     } else if(action.compare("Stop") == 0)
@@ -259,13 +259,13 @@ int RobotBase::PositionUpdate( Model* model, RobotBase* robot)
       int delim2 = command->find_first_of(" ", delim+1);
       std::string target = command->substr(delim+1, delim2-(delim+1));
       std::stringstream ss(command->substr(delim2+1));
-      double dist;
+      float dist;
       ss >> dist;
       robot->Follow(target, dist);
     } else if(action.compare("MoveTo") == 0)
     {
       std::stringstream ss(command->substr(delim+1));
-      double x, y;
+      float x, y;
       ss >> x;
       ss >> y;
       robot->MoveTo(x, y);
@@ -310,12 +310,20 @@ void RobotBase::GoStraight(float speed)
 
 void RobotBase::TurnLeft(float speed)
 {
+  if(speed > 1.0)
+    speed = 1.0;
+  if(speed < -1.0)
+    speed = -1.0;
   RightWheelVelocity += speed*MAXSPEED;
   LeftWheelVelocity -= speed*MAXSPEED;
 }
 
 void RobotBase::TurnRight(float speed)
 {
+  if(speed > 1.0)
+    speed = 1.0;
+  if(speed < -1.0)
+    speed = -1.0;
   RightWheelVelocity -= speed*MAXSPEED;
   LeftWheelVelocity += speed*MAXSPEED;
 }

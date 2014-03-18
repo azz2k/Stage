@@ -295,7 +295,7 @@ void World::Run()
           UpdateAll();
           // log for the history thing
           epuckMessages::SimRobot::Pose *pose = result.mutable_self()->add_history();
-          pose->set_t(job.msg.self().pose().t() + (mythis->sim_time - startTime));
+          pose->set_t(job.msg.self().pose().t() + (1e-6*mythis->sim_time - 1e-6*startTime));
           pose->set_x(mythis->GetModel(job.msg.self().name())->pose.x);
           pose->set_y(mythis->GetModel(job.msg.self().name())->pose.y);
           pose->set_a(mythis->GetModel(job.msg.self().name())->pose.a);
@@ -304,7 +304,7 @@ void World::Run()
             for(int i=0; i < job.msg.other_size(); i++)
             {
               pose = result.mutable_other(i)->add_history();
-              pose->set_t(job.msg.self().pose().t() + (mythis->sim_time - startTime));
+              pose->set_t(job.msg.self().pose().t() + (1e-6*mythis->sim_time - 1e-6*startTime));
               pose->set_x(mythis->GetModel(job.msg.other(i).name())->pose.x);
               pose->set_y(mythis->GetModel(job.msg.other(i).name())->pose.y);
               pose->set_a(mythis->GetModel(job.msg.other(i).name())->pose.a);
@@ -316,7 +316,7 @@ void World::Run()
 //          <<  mythis->GetModel(job.msg.self().name())->pose.y << " "
 //          <<  mythis->GetModel(job.msg.self().name())->pose.a << " "
 //          << std::endl;
-        result.mutable_self()->mutable_pose()->set_t(job.msg.self().pose().t() + (mythis->sim_time - startTime));
+        result.mutable_self()->mutable_pose()->set_t(job.msg.self().pose().t() + (1e-6*mythis->sim_time - 1e-6*startTime));
         result.mutable_self()->mutable_pose()->set_x(mythis->GetModel(job.msg.self().name())->pose.x);
         result.mutable_self()->mutable_pose()->set_y(mythis->GetModel(job.msg.self().name())->pose.y);
         result.mutable_self()->mutable_pose()->set_a(mythis->GetModel(job.msg.self().name())->pose.a);
@@ -324,7 +324,7 @@ void World::Run()
         {
           for(int i=0; i < job.msg.other_size(); i++)
           {
-            result.mutable_other(i)->mutable_pose()->set_t(job.msg.self().pose().t() + (mythis->sim_time - startTime));
+            result.mutable_other(i)->mutable_pose()->set_t(job.msg.self().pose().t() + (1e-6*mythis->sim_time - 1e-6*startTime));
             result.mutable_other(i)->mutable_pose()->set_x(mythis->GetModel(job.msg.other(i).name())->pose.x);
             result.mutable_other(i)->mutable_pose()->set_y(mythis->GetModel(job.msg.other(i).name())->pose.y);
             result.mutable_other(i)->mutable_pose()->set_a(mythis->GetModel(job.msg.other(i).name())->pose.a);

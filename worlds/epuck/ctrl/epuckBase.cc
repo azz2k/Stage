@@ -145,6 +145,7 @@ RobotBase::RobotBase(ModelPosition* pos):
   rng(static_cast<unsigned int>(std::time(0))),
   MAXSPEED(600),
   ctrlString("Stop"),
+  smoothProximity(0.01),
   bumped(0)
 {
     std::cout << "RobotBase constructor for " << pos->TokenStr() << std::endl;
@@ -157,7 +158,10 @@ RobotBase::RobotBase(ModelPosition* pos):
     this->name = strdup(this->pos->Token());
 
     for (i = 0;i < NUM_IRS;i++)
-        this->proximity[i] = 0;
+    {
+      this->proximity[i] = 0;
+      this->offsetProximity[i] = 0;
+    }
 
     this->ir = (ModelRanger *) pos->GetUnusedModelOfType("ranger"); // find the names in libstage/typetable.cc
     if (this->ir)
@@ -203,8 +207,15 @@ int RobotBase::IRUpdate( Model* mod, RobotBase *robot )
         robot->proximity[i] = proximity_data[clip(ir_min)][0];
         if (robot->proximity[i] > 10)
             robot->bumped |= 1 << i;
-        if(robot->proximity[i] < 10)
-          robot->proximity[i] = 0;
+        
+        // mimic real robots filter etc.
+        if(robot->proximity[i] < 100)
+        {
+          robot->offsetProximity[i] = (1.0 - robot->smoothProximity)*robot->offsetProximity[i] + robot->smoothProximity*robot->proximity[i];
+          robot->proximity[i] -= robot->offsetProximity[i];
+          if(robot->proximity[i] < 10)
+            robot->proximity[i] = 0;
+        }
     }
     return 0;
 }

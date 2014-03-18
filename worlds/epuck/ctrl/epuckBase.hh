@@ -43,6 +43,8 @@ class RobotBase
     void PrintProximitySensor();
 
     int proximity[NUM_IRS];
+    float smoothProximity;
+    int offsetProximity[NUM_IRS];
     char *name;
     unsigned char bumped;
 };

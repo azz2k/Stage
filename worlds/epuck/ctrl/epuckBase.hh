@@ -33,8 +33,8 @@ class RobotBase
     void SetSpeed(int lspeed, int rspeed);
     
     void GoStraight(float speed); // speed from [-1.0; 1.0]
-    void TurnLeft();
-    void TurnRight();
+    void TurnLeft(float speed);
+    void TurnRight(float speed);
     bool Stop();
     void Follow(std::string name, float desiredDist);
     void MoveTo(float x, float y);

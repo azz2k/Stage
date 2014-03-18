@@ -13,7 +13,7 @@ class RobotTurnLeft: public RobotBase
       RobotBase(pos)
     {
       std::cout << "RobotTurnLeft constructor" << std::endl;
-      this->ctrlString = "TurnLeft";
+      this->ctrlString = "TurnLeft 0.2";
     }
     ~RobotTurnLeft()
     {

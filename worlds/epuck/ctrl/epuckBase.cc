@@ -203,6 +203,8 @@ int RobotBase::IRUpdate( Model* mod, RobotBase *robot )
         robot->proximity[i] = proximity_data[clip(ir_min)][0];
         if (robot->proximity[i] > 10)
             robot->bumped |= 1 << i;
+        if(robot->proximity[i] < 10)
+          robot->proximity[i] = 0;
     }
     return 0;
 }

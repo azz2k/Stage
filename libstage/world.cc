@@ -255,8 +255,8 @@ void World::Run()
         job = mythis->simJobs.front();
         mythis->simJobs.pop();
         pthread_mutex_unlock(&(mythis->simJobsMutex));
-        std::cout << "Setting up simulation" << std::endl;
-        std::cout << job.msg.self().name() << " : " << job.msg.self().ctrlstring() << std::endl;
+//        std::cout << "Setting up simulation" << std::endl;
+//        std::cout << job.msg.self().name() << " : " << job.msg.self().ctrlstring() << std::endl;
         mythis->GetModel(job.msg.self().name())->pose.x = job.msg.self().pose().x();
         mythis->GetModel(job.msg.self().name())->pose.y = job.msg.self().pose().y();
         mythis->GetModel(job.msg.self().name())->pose.a = job.msg.self().pose().a();
@@ -271,12 +271,12 @@ void World::Run()
             allRobotCtrl[job.msg.other(i).name()]->SetCtrlString(job.msg.other(i).ctrlstring());
           }
         }
-        std::cout << "Starting simulation" << std::endl;
+//        std::cout << "Starting simulation" << std::endl;
         usec_t startTime = mythis->sim_time;
-        std::cout <<  mythis->GetModel(job.msg.self().name())->pose.x << " "
-          << mythis->GetModel(job.msg.self().name())->pose.y << " "
-          << mythis->GetModel(job.msg.self().name())->pose.a << " "
-          << std::endl;
+//        std::cout <<  mythis->GetModel(job.msg.self().name())->pose.x << " "
+//          << mythis->GetModel(job.msg.self().name())->pose.y << " "
+//          << mythis->GetModel(job.msg.self().name())->pose.a << " "
+//          << std::endl;
         // generate result for logging
         epuckMessages::SimResult result;
         result.mutable_self()->set_name(job.msg.self().name());
@@ -311,11 +311,11 @@ void World::Run()
             }
           }
         }
-        std::cout << "Simulation finished" << std::endl;
-        std::cout <<  mythis->GetModel(job.msg.self().name())->pose.x << " "
-          <<  mythis->GetModel(job.msg.self().name())->pose.y << " "
-          <<  mythis->GetModel(job.msg.self().name())->pose.a << " "
-          << std::endl;
+//        std::cout << "Simulation finished" << std::endl;
+//        std::cout <<  mythis->GetModel(job.msg.self().name())->pose.x << " "
+//          <<  mythis->GetModel(job.msg.self().name())->pose.y << " "
+//          <<  mythis->GetModel(job.msg.self().name())->pose.a << " "
+//          << std::endl;
         result.mutable_self()->mutable_pose()->set_t(job.msg.self().pose().t() + (mythis->sim_time - startTime));
         result.mutable_self()->mutable_pose()->set_x(mythis->GetModel(job.msg.self().name())->pose.x);
         result.mutable_self()->mutable_pose()->set_y(mythis->GetModel(job.msg.self().name())->pose.y);
@@ -334,9 +334,9 @@ void World::Run()
         result.SerializeToString(&serializedResult);
         serializedResult.append("*#D#*");
         int txlen = sendto(job.clientsd, serializedResult.c_str(), serializedResult.size()*sizeof(char), 0, (struct sockaddr*) &job.client, sizeof(job.client));
-        std::cout << "sending message of size: " << serializedResult.size() << " to " <<  inet_ntoa(job.client.sin_addr) << ":" << ntohs(job.client.sin_port) << " sent: " << txlen << std::endl;
-        std::cout << "self begin: " << job.msg.self().pose().x() << " " << job.msg.self().pose().y() << " " << job.msg.self().pose().a() << std::endl;
-        std::cout << "self end:   " << result.self().pose().x() << " " << result.self().pose().y() << " " << result.self().pose().a() << std::endl;
+//        std::cout << "sending message of size: " << serializedResult.size() << " to " <<  inet_ntoa(job.client.sin_addr) << ":" << ntohs(job.client.sin_port) << " sent: " << txlen << std::endl;
+//        std::cout << "self begin: " << job.msg.self().pose().x() << " " << job.msg.self().pose().y() << " " << job.msg.self().pose().a() << std::endl;
+//        std::cout << "self end:   " << result.self().pose().x() << " " << result.self().pose().y() << " " << result.self().pose().a() << std::endl;
       }
     }
   }
@@ -419,10 +419,10 @@ void *World::receiveSimJobs(void)
       std::string msgRaw = msgStream.substr(0, delimPos);
       msgStream.erase(0, delimPos+5);
       epuckMessages::SimRequest msg;
-      std::cout << "received a message of size " << msgRaw.size() << " from " << inet_ntoa(client.sin_addr) << ":" << ntohs(client.sin_port) << std::endl;
+//      std::cout << "received a message of size " << msgRaw.size() << " from " << inet_ntoa(client.sin_addr) << ":" << ntohs(client.sin_port) << std::endl;
       if(msg.ParseFromString(msgRaw))
       {
-        std::cout << "correct message" << std::endl;
+//        std::cout << "correct message" << std::endl;
         struct World::SimJob job;
         job.msg = msg;
         job.clientsd = clientsd;

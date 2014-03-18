@@ -286,6 +286,8 @@ int RobotBase::PositionUpdate( Model* model, RobotBase* robot)
     {
       robot->Avoidance();
     }
+
+    robot->PrintProximitySensor();
   }
 
   robot->SetSpeed(robot->LeftWheelVelocity, robot->RightWheelVelocity);

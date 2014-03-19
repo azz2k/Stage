@@ -258,6 +258,7 @@ void World::Run()
 //        std::cout << "Setting up simulation" << std::endl;
 //        std::cout << job.msg.self().name() << " : " << job.msg.self().ctrlstring() << std::endl;
         Pose pose(job.msg.self().pose().x(), job.msg.self().pose().y(), 0.0, job.msg.self().pose().a());
+        // this is important so the simulator knows we moved the model!!
         mythis->GetModel(job.msg.self().name())->SetGlobalPose(pose);
         allRobotCtrl[job.msg.self().name()]->SetCtrlString(job.msg.self().ctrlstring());
         if(job.msg.other_size() > 0)
@@ -265,6 +266,7 @@ void World::Run()
           for(int i=0; i < job.msg.other_size(); i++)
           {
             Pose pose(job.msg.other(i).pose().x(), job.msg.other(i).pose().y(), 0.0, job.msg.other(i).pose().a());
+            // this is important so the simulator knows we moved the model!!
             mythis->GetModel(job.msg.other(i).name())->SetGlobalPose(pose);
             allRobotCtrl[job.msg.other(i).name()]->SetCtrlString(job.msg.other(i).ctrlstring());
           }

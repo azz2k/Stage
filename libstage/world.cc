@@ -257,17 +257,15 @@ void World::Run()
         pthread_mutex_unlock(&(mythis->simJobsMutex));
 //        std::cout << "Setting up simulation" << std::endl;
 //        std::cout << job.msg.self().name() << " : " << job.msg.self().ctrlstring() << std::endl;
-        mythis->GetModel(job.msg.self().name())->pose.x = job.msg.self().pose().x();
-        mythis->GetModel(job.msg.self().name())->pose.y = job.msg.self().pose().y();
-        mythis->GetModel(job.msg.self().name())->pose.a = job.msg.self().pose().a();
+        Pose pose(job.msg.self().pose().x(), job.msg.self().pose().y(), 0.0, job.msg.self().pose().a());
+        mythis->GetModel(job.msg.self().name())->SetGlobalPose(pose);
         allRobotCtrl[job.msg.self().name()]->SetCtrlString(job.msg.self().ctrlstring());
         if(job.msg.other_size() > 0)
         {
           for(int i=0; i < job.msg.other_size(); i++)
           {
-            mythis->GetModel(job.msg.other(i).name())->pose.x = job.msg.other(i).pose().x();
-            mythis->GetModel(job.msg.other(i).name())->pose.y = job.msg.other(i).pose().y();
-            mythis->GetModel(job.msg.other(i).name())->pose.a = job.msg.other(i).pose().a();
+            Pose pose(job.msg.other(i).pose().x(), job.msg.other(i).pose().y(), 0.0, job.msg.other(i).pose().a());
+            mythis->GetModel(job.msg.other(i).name())->SetGlobalPose(pose);
             allRobotCtrl[job.msg.other(i).name()]->SetCtrlString(job.msg.other(i).ctrlstring());
           }
         }

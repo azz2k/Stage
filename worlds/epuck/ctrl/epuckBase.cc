@@ -185,6 +185,9 @@ void RobotBase::SetCtrlString(std::string ctrlString)
 {
   this->ctrlString = ctrlString;
   this->SetSpeed(0.0, 0.0);
+//  this->LeftWheelVelocity = 0.0;
+//  this->RightWheelVelocity = 0.0;
+  this->bumped = 0;
   for (int i = 0;i < NUM_IRS;i++)
   {
     this->proximity[i] = 0;

@@ -272,7 +272,6 @@ void World::Run()
           }
         }
 //        std::cout << "Starting simulation" << std::endl;
-        usec_t startTime = mythis->sim_time;
 //        std::cout <<  mythis->GetModel(job.msg.self().name())->pose.x << " "
 //          << mythis->GetModel(job.msg.self().name())->pose.y << " "
 //          << mythis->GetModel(job.msg.self().name())->pose.a << " "
@@ -290,6 +289,7 @@ void World::Run()
             other->set_ctrlstring(job.msg.other(i).ctrlstring());
           }
         }
+        usec_t startTime = mythis->sim_time;
         while(mythis->sim_time < startTime + job.msg.dt()*1e6)
         {
           UpdateAll();

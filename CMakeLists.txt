@@ -41,7 +41,7 @@ ENDIF (NOT PROJECT_OS_WIN AND NOT PROJECT_OS_SOLARIS)
 
 #####################################
 # Build type cflags
-SET (OPTIMIZE "-O2")
+SET (OPTIMIZE "-march=native -O2")
 
 # uncomment this to force 32bit on OS X, for example if you can't build FLTK 64bit
 # e.g. using MacPorts on 10.6 Snow Leopard

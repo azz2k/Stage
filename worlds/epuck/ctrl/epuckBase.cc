@@ -435,8 +435,8 @@ void RobotBase::Avoidance()
 {
     for (int i = 0; i < NUM_IRS; i++)
     {
-        LeftWheelVelocity += avoid_weightleft[i] * (proximity[i]);
-        RightWheelVelocity += avoid_weightright[i] * (proximity[i]);
+        this->LeftWheelVelocity += avoid_weightleft[i] * (proximity[i]);
+        this->RightWheelVelocity += avoid_weightright[i] * (proximity[i]);
     }
 }
 

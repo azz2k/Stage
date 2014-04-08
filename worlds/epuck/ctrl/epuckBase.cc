@@ -220,7 +220,7 @@ int RobotBase::IRUpdate( Model* mod, RobotBase *robot )
         if(robot->proximity[i] < 100)
         {
           robot->offsetProximity[i] = (1.0 - robot->smoothProximity)*robot->offsetProximity[i] + robot->smoothProximity*robot->proximity[i];
-          robot->proximity[i] -= robot->offsetProximity[i];
+//          robot->proximity[i] -= robot->offsetProximity[i];
           if(robot->proximity[i] < 10)
             robot->proximity[i] = 0;
         }

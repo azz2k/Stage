@@ -5,12 +5,12 @@ include "../map.inc"
 
 stagePort 8722
 
-speedup 1
+speedup -1
 
 interval_sim 100
 resolution 0.005
 
-threads 6
+threads 2
 
 window
 (

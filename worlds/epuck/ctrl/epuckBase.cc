@@ -217,13 +217,13 @@ int RobotBase::IRUpdate( Model* mod, RobotBase *robot )
             robot->bumped |= 1 << i;
         
         // mimic real robots filter etc.
-        if(robot->proximity[i] < 100)
-        {
-          robot->offsetProximity[i] = (1.0 - robot->smoothProximity)*robot->offsetProximity[i] + robot->smoothProximity*robot->proximity[i];
+//        if(robot->proximity[i] < 100)
+//        {
+//          robot->offsetProximity[i] = (1.0 - robot->smoothProximity)*robot->offsetProximity[i] + robot->smoothProximity*robot->proximity[i];
 //          robot->proximity[i] -= robot->offsetProximity[i];
-          if(robot->proximity[i] < 10)
-            robot->proximity[i] = 0;
-        }
+//          if(robot->proximity[i] < 10)
+//            robot->proximity[i] = 0;
+//        }
     }
     return 0;
 }

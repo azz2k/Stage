@@ -143,7 +143,7 @@ static std::map<std::string, RobotBase*> allRobotCtrl;
 
 RobotBase::RobotBase(ModelPosition* pos):
   rng(static_cast<unsigned int>(std::time(0))),
-  MAXSPEED(600),
+  MAXSPEED(800),
   ctrlString("Stop"),
   smoothProximity(0.01),
   bumped(0)

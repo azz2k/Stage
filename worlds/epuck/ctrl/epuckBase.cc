@@ -293,6 +293,20 @@ int RobotBase::PositionUpdate( Model* model, RobotBase* robot)
     } else if(action.compare("Avoidance") == 0)
     {
       robot->Avoidance();
+    } else if(action.compare("CalibrateIR") == 0)
+    {
+      robot->SetCtrlString("Stop");
+    } else if(action.compare("SetpSpeed") == 0)
+    {
+      std::stringstream ss(command->substr(delim+1));
+      float x, y;
+      ss >> x;
+      ss >> y;
+      robot->LeftWheelVelocity = x;
+      robot->RightWheelVelocity = y;
+    } else if(action.compare("PrintProximityValues") == 0)
+    {
+      // no method to do this, just pass
     }
   }
 

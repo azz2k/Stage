@@ -39,6 +39,7 @@ class RobotBase
     void Follow(std::string name, float desiredDist);
     void MoveTo(float x, float y);
     void Avoidance();
+    void Flock(float dist, std::vector<std::string> &members);
     
     void PrintProximitySensor();
 

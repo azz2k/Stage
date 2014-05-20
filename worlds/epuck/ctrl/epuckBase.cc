@@ -2,6 +2,8 @@
 #define EPUCKBASE_CC
 #include "epuckBase.hh"
 #include <iostream>
+#include <iterator>
+#include <algorithm>
 #include <ctime>
 #include <map>
 #include <sstream>
@@ -307,6 +309,19 @@ int RobotBase::PositionUpdate( Model* model, RobotBase* robot)
     } else if(action.compare("PrintProximityValues") == 0)
     {
       // no method to do this, just pass
+    } else if(action.compare("Flock") == 0)
+    {
+      std::stringstream ss(command->substr(delim+1));
+      std::vector<std::string> tokens;
+      std::copy(std::istream_iterator<std::string>(ss), std::istream_iterator<std::string>(), std::back_inserter<std::vector<std::string> >(tokens));
+      std::stringstream ss2(tokens[0]);
+      float dist;
+      ss2 >> dist;
+      tokens.erase(tokens.begin());
+      std::vector<std::string>::iterator self = std::find(tokens.begin(), tokens.end(), std::string(robot->name));
+      if(self != tokens.end())
+        tokens.erase(self);
+      robot->Flock(dist, tokens);
     }
   }
 
@@ -452,6 +467,51 @@ void RobotBase::Avoidance()
         this->LeftWheelVelocity += avoid_weightleft[i] * (proximity[i]);
         this->RightWheelVelocity += avoid_weightright[i] * (proximity[i]);
     }
+}
+
+void RobotBase::Flock(float dist, std::vector<std::string> &members)
+{
+  float alpha = 1e0/members.size();
+  float fx = 0.0;
+  float fy = 0.0;
+  
+  float myx = this->pos->est_pose.x;
+  float myy = this->pos->est_pose.y;
+  float mya = this->pos->est_pose.a;
+  for(std::vector<std::string>::iterator other = members.begin(); other != members.end(); other++)
+  {
+    float otherx = this->myModel->GetWorld()->GetModel(*other)->GetGlobalPose().x;
+    float othery = this->myModel->GetWorld()->GetModel(*other)->GetGlobalPose().y;
+
+    float dx = otherx - myx;
+    float dy = othery - myy;
+  
+    float d = sqrt(dx*dx + dy*dy);
+    if(d < 20.0 * dist)
+    {
+      if(d < dist)
+      {
+        fx += -alpha * dx/d * 1.0/(d-dist)*(d-dist);
+        fy += -alpha * dy/d * 1.0/(d-dist)*(d-dist);
+      } else
+      {
+        fx += alpha * dx/d * 1.0/(d-dist)*(d-dist);
+        fy += alpha * dy/d * 1.0/(d-dist)*(d-dist);
+      }
+    }
+  }
+  float f = sqrt(fx*fx + fy*fy);
+
+  float newa = atan2(fy, fx);
+  float steera = newa-mya;
+  if(steera > M_PI)
+    steera -= 2.0*M_PI;
+  if(steera < -M_PI)
+    steera += 2.0*M_PI;
+  steera /= M_PI;
+  std::cout << this->name << ":" << mya << " " << newa << " " << steera << " " << f << std::endl;
+  this->LeftWheelVelocity += (-steera + f)*MAXSPEED;
+  this->RightWheelVelocity += (steera + f)*MAXSPEED;
 }
 
 //below defined functions for debugging

@@ -12,6 +12,13 @@ TARGET_LINK_LIBRARIES( epuckFollow stage )
 SET_TARGET_PROPERTIES( epuckFollow PROPERTIES PREFIX "" )
 INSTALL( TARGETS epuckFollow DESTINATION ${PROJECT_PLUGIN_DIR})
 
+SET(epuckFlockSrcs ctrl/epuckFlock.cc)
+set_source_files_properties( ${epuckFlockSrcs} PROPERTIES COMPILE_FLAGS "${FLTK_CFLAGS}" )
+ADD_LIBRARY( epuckFlock MODULE ${epuckFlockSrcs} )
+TARGET_LINK_LIBRARIES( epuckFlock stage )
+SET_TARGET_PROPERTIES( epuckFlock PROPERTIES PREFIX "" )
+INSTALL( TARGETS epuckFlock DESTINATION ${PROJECT_PLUGIN_DIR})
+
 SET(epuckMoveToSrcs ctrl/epuckMoveTo.cc)
 set_source_files_properties( ${epuckMoveToSrcs} PROPERTIES COMPILE_FLAGS "${FLTK_CFLAGS}" )
 ADD_LIBRARY( epuckMoveTo MODULE ${epuckMoveToSrcs} )

@@ -471,14 +471,35 @@ void RobotBase::Avoidance()
 
 void RobotBase::Flock(float dist, std::vector<std::string> &members)
 {
-  float alpha = 1e0/members.size();
+  float alpha = 5e0/2;
+
   float fx = 0.0;
   float fy = 0.0;
   
   float myx = this->pos->est_pose.x;
   float myy = this->pos->est_pose.y;
   float mya = this->pos->est_pose.a;
+  
+  std::map<float, std::string> candidates;
   for(std::vector<std::string>::iterator other = members.begin(); other != members.end(); other++)
+  {
+    float otherx = this->myModel->GetWorld()->GetModel(*other)->GetGlobalPose().x;
+    float othery = this->myModel->GetWorld()->GetModel(*other)->GetGlobalPose().y;
+    float dx = otherx - myx;
+    float dy = othery - myy;
+    float d = sqrt(dx*dx + dy*dy);
+    candidates[d] = *other;
+  }
+  
+  std::vector<std::string> others;
+  for(std::map<float, std::string>::iterator it = candidates.begin(); it != candidates.end(); it++)
+  {
+    if(others.size() < 2)
+      others.push_back(it->second);
+  }
+
+  
+  for(std::vector<std::string>::iterator other = others.begin(); other != others.end(); other++)
   {
     float otherx = this->myModel->GetWorld()->GetModel(*other)->GetGlobalPose().x;
     float othery = this->myModel->GetWorld()->GetModel(*other)->GetGlobalPose().y;
@@ -487,31 +508,22 @@ void RobotBase::Flock(float dist, std::vector<std::string> &members)
     float dy = othery - myy;
   
     float d = sqrt(dx*dx + dy*dy);
-    if(d < 20.0 * dist)
-    {
-      if(d < dist)
-      {
-        fx += -alpha * dx/d * 1.0/(d-dist)*(d-dist);
-        fy += -alpha * dy/d * 1.0/(d-dist)*(d-dist);
-      } else
-      {
-        fx += alpha * dx/d * 1.0/(d-dist)*(d-dist);
-        fy += alpha * dy/d * 1.0/(d-dist)*(d-dist);
-      }
-    }
+    
+    fx += -alpha * dx/d * (dist - d);
+    fy += -alpha * dy/d * (dist - d);
   }
-  float f = sqrt(fx*fx + fy*fy);
 
-  float newa = atan2(fy, fx);
-  float steera = newa-mya;
-  if(steera > M_PI)
-    steera -= 2.0*M_PI;
-  if(steera < -M_PI)
-    steera += 2.0*M_PI;
-  steera /= M_PI;
-  std::cout << this->name << ":" << mya << " " << newa << " " << steera << " " << f << std::endl;
-  this->LeftWheelVelocity += (-steera + f)*MAXSPEED;
-  this->RightWheelVelocity += (steera + f)*MAXSPEED;
+
+  float fxa = cos(-mya) * fx - sin(-mya) * fy;
+  float fya = sin(-mya) * fx + cos(-mya) * fy;
+
+  std::cout << this->name << ": ";
+  for(std::vector<std::string>::iterator other = others.begin(); other != others.end(); other++)
+    std::cout << *other << " ";
+  std::cout << mya << " " << fx << " " << fy << " " << fxa << " " << fya << std::endl;
+
+  this->LeftWheelVelocity  += (fya + fxa) * this->MAXSPEED;
+  this->RightWheelVelocity += (-fya + fxa) * this->MAXSPEED;
 }
 
 //below defined functions for debugging

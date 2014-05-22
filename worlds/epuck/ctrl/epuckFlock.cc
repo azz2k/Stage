@@ -13,7 +13,7 @@ class RobotFlock: public RobotBase
       RobotBase(pos)
     {
       std::cout << "RobotFlock constructor" << std::endl;
-      this->ctrlString = "Flock 0.5 epuck12 epuck21 epuck22 epuck29 epuck32 epuck46;Avoidance";
+      this->ctrlString = "Flock 0.3 epuck12 epuck21 epuck22 epuck29 epuck32 epuck46;Avoidance";
     }
     ~RobotFlock()
     {

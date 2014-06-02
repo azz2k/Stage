@@ -479,7 +479,8 @@ void RobotBase::Flock(float dist, std::vector<std::string> &members)
   float myx = this->pos->est_pose.x;
   float myy = this->pos->est_pose.y;
   float mya = this->pos->est_pose.a;
-  
+ 
+  // map for sorting, I was to lazy for the sorting class
   std::map<float, std::string> candidates;
   for(std::vector<std::string>::iterator other = members.begin(); other != members.end(); other++)
   {
@@ -491,6 +492,7 @@ void RobotBase::Flock(float dist, std::vector<std::string> &members)
     candidates[d] = *other;
   }
   
+  // get the closest robots
   std::vector<std::string> others;
   for(std::map<float, std::string>::iterator it = candidates.begin(); it != candidates.end(); it++)
   {
@@ -498,7 +500,7 @@ void RobotBase::Flock(float dist, std::vector<std::string> &members)
       others.push_back(it->second);
   }
 
-  
+  // calculate force
   for(std::vector<std::string>::iterator other = others.begin(); other != others.end(); other++)
   {
     float otherx = this->myModel->GetWorld()->GetModel(*other)->GetGlobalPose().x;
@@ -514,6 +516,8 @@ void RobotBase::Flock(float dist, std::vector<std::string> &members)
   }
 
 
+  // rotate the force vector to the robot frame to get a the parts parallel and
+  // perpendicular to it
   float fxa = cos(-mya) * fx - sin(-mya) * fy;
   float fya = sin(-mya) * fx + cos(-mya) * fy;
 

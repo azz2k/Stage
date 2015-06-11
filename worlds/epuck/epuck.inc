@@ -96,15 +96,6 @@ define dummybody block(
   color "green"
 )
 
-define arrow block(
-  points 3
-  point[0] [-0.00 0.02]
-  point[1] [0.04 0.0]
-  point[2] [-0.00 -0.02]
-  z [0.049 0.05]
-  color "red"
-)
-
 define  epuck_base position
 (
   
@@ -135,7 +126,6 @@ define epuck epuck_base
   mainbody()
   mainpcb()
   turrent1()
-  arrow()
   epuck_ir(pose [ 0 0 -0.025 0 ])
   #camera( size [0.003 0.006 0.006] pose [ 0.034  0 -0.02 0 ]  range [ 0.05 1.0 ] resolution [ 100 100 ] fov [ 60 40 ] pantilt [ 0 0 ] )
   #epuck_blobfinder(pose [ 0 0 -0.01 0 ])

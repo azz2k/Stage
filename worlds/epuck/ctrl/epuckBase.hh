@@ -50,4 +50,31 @@ class RobotBase
     unsigned char bumped;
 };
 
+class RobotManager
+{
+  public:
+    static RobotManager& getInstance()
+    {
+      static RobotManager    instance;
+      return instance;
+    }
+    void registerRobot(const std::string &name, RobotBase* robot)
+    {
+      this->allRobotCtrl[name] = robot;
+    }
+    RobotBase* getRobot(const std::string &name)
+    {
+      return this->allRobotCtrl[name];
+    }
+    unsigned int size()
+    {
+      return this->allRobotCtrl.size();
+    }
+  private:
+    std::map<std::string, RobotBase*> allRobotCtrl;
+    RobotManager() {};
+    RobotManager(RobotManager const&);
+    void operator=(RobotManager const&);
+};
+
 #endif

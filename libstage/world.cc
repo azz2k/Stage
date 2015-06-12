@@ -110,7 +110,6 @@ using namespace Stg;
 #include "../../protobuf/lib/epuck.pb.h"
 #include "../worlds/epuck/ctrl/epuckBase.cc"
 
-
 // // function objects for comparing model positions
 bool World::ltx::operator()(const Model* a, const Model* b) const
 {
@@ -240,7 +239,8 @@ void World::Run()
   else
   {
     World *mythis = *World::world_set.begin();
-    std::cout << "number of controllers active: " << allRobotCtrl.size() << std::endl;
+    RobotManager &rm = RobotManager::getInstance();
+    std::cout << "number of controllers active: " << rm.size() << std::endl;
     pthread_create(&(mythis->simJobsThread), NULL, &World::receiveSimJobsHelper, mythis);
     while(true)
     {
@@ -260,7 +260,7 @@ void World::Run()
         Pose pose(job.msg.self().pose().x(), job.msg.self().pose().y(), 0.0, job.msg.self().pose().a());
         // this is important so the simulator knows we moved the model!!
         mythis->GetModel(job.msg.self().name())->SetGlobalPose(pose);
-        allRobotCtrl[job.msg.self().name()]->SetCtrlString(job.msg.self().ctrlstring());
+        rm.getRobot(job.msg.self().name())->SetCtrlString(job.msg.self().ctrlstring());
         if(job.msg.other_size() > 0)
         {
           for(int i=0; i < job.msg.other_size(); i++)
@@ -268,7 +268,7 @@ void World::Run()
             Pose pose(job.msg.other(i).pose().x(), job.msg.other(i).pose().y(), 0.0, job.msg.other(i).pose().a());
             // this is important so the simulator knows we moved the model!!
             mythis->GetModel(job.msg.other(i).name())->SetGlobalPose(pose);
-            allRobotCtrl[job.msg.other(i).name()]->SetCtrlString(job.msg.other(i).ctrlstring());
+            rm.getRobot(job.msg.other(i).name())->SetCtrlString(job.msg.other(i).ctrlstring());
           }
         }
 //        std::cout << "Starting simulation" << std::endl;

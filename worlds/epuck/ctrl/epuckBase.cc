@@ -140,8 +140,6 @@ double proximity_data[][2]={
 	{2.00,	0.24},
 	{1.40,	0.24}};
 
-static std::map<std::string, RobotBase*> allRobotCtrl;
-
 
 RobotBase::RobotBase(ModelPosition* pos):
   rng(static_cast<unsigned int>(std::time(0))),
@@ -151,7 +149,8 @@ RobotBase::RobotBase(ModelPosition* pos):
   bumped(0)
 {
     std::cout << "RobotBase constructor for " << pos->TokenStr() << std::endl;
-    allRobotCtrl[pos->TokenStr()] = this;
+    RobotManager &rm = RobotManager::getInstance();
+    rm.registerRobot(pos->TokenStr(), this);
     int i = 0;
     this->pos = pos;
     this->pos->AddCallback(Model::CB_UPDATE, (model_callback_t)this->PositionUpdate, this);

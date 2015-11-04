@@ -107,7 +107,7 @@ using namespace Stg;
 #include <string>
 #include <iostream>
 #include <queue>
-#include "../../protobuf/lib/epuck.pb.h"
+#include "../protobuf/epuck.pb.h"
 #include "../worlds/epuck/ctrl/epuckBase.cc"
 
 // // function objects for comparing model positions

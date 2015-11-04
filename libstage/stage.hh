@@ -1989,7 +1989,7 @@ namespace Stg
     unsigned int trail_index;
 
     /** The maxiumum length of the trail drawn. Default is 20, but can
-	be set in the world file using the tail_length model
+	be set in the world file using the trail_length model
 	property. */
     static unsigned int trail_length;
 	 

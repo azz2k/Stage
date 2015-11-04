@@ -70,7 +70,7 @@
 
 // my includes
 #include <netinet/in.h> // struct sockaddr_in
-#include "../../protobuf/lib/epuck.pb.h"
+#include "../protobuf/epuck.pb.h"
 
 /** @brief The Stage library uses its own namespace */
 namespace Stg 

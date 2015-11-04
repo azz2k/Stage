@@ -68,7 +68,7 @@ target_link_libraries( stage
                        ${FLTK_LIBRARIES}
 )
 
-set( stagebinarySrcs main.cc ../protobuf/lib/epuck.pb.cc)
+set( stagebinarySrcs main.cc ../protobuf/epuck.pb.cc)
 set_source_files_properties( ${stagebinarySrcs} PROPERTIES COMPILE_FLAGS "${FLTK_CFLAGS}" )
 
 # TODO: build an app bundle on OS X

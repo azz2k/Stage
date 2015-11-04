@@ -9,3 +9,6 @@ arrive at a specified port. These packets are simulation instructions with
 initical conditions, robot controllers, and a simulation time. Upon completion
 of the simulation the server returns a set of robot trajectories for the
 simulated time.
+
+The messages for the simulation server use
+[protobuf](https://github.com/google/protobuf).

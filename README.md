@@ -11,4 +11,6 @@ of the simulation the server returns a set of robot trajectories for the
 simulated time.
 
 The messages for the simulation server use
-[protobuf](https://github.com/google/protobuf).
+[protobuf](https://github.com/google/protobuf). As it is hacked, you have to
+run the message generation yourself using `protoc --cpp_out . -I . epuck.proto`
+in the protobuf directory.

@@ -1,0 +1,35 @@
+package epuckMessages;
+
+message SimRobot
+{
+  message Pose
+  {
+    required double t = 1;
+    required float x = 2;
+    required float y = 3;
+    required float a = 4;
+  }
+  required string name = 1;
+  required Pose pose = 2;
+  required string ctrlString = 3;
+  repeated Pose history = 4;
+}
+
+message SimRequest
+{
+  required SimRobot self = 1;
+  repeated SimRobot other = 2;
+  required float dt = 3; 
+}
+
+message SimResult
+{
+  required SimRobot self = 1;
+  repeated SimRobot other = 2;
+}
+
+message CtrlRequest
+{
+  required string name = 1;
+  required string ctrlString = 2;
+}
